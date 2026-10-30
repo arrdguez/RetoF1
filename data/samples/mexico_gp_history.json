@@ -1,0 +1,43 @@
+{
+  "circuit": "Autódromo Hermanos Rodríguez",
+  "historical_editions": [
+    {
+      "year": 2021,
+      "pole": "BOT",
+      "podium": ["VER", "HAM", "PER"],
+      "fastest_lap": "PER",
+      "checo_finish": 3,
+      "safety_cars_physical": 1
+    },
+    {
+      "year": 2022,
+      "pole": "VER",
+      "podium": ["VER", "HAM", "PER"],
+      "fastest_lap": "RUS",
+      "checo_finish": 3,
+      "safety_cars_physical": 0
+    },
+    {
+      "year": 2023,
+      "pole": "LEC",
+      "podium": ["VER", "HAM", "LEC"],
+      "fastest_lap": "HAM",
+      "checo_finish": "DNF",
+      "safety_cars_physical": 1
+    },
+    {
+      "year": 2024,
+      "pole": "SAI",
+      "podium": ["SAI", "NOR", "LEC"],
+      "fastest_lap": "LEC",
+      "checo_finish": 17,
+      "safety_cars_physical": 1
+    }
+  ],
+  "insights": {
+    "safety_car_rate": "Physical Safety Car deployed in 3 out of the last 4 races (75% probability)",
+    "turn_1_hazard": "Longest drag race to Turn 1 (890m) causing recurrent first-lap collisions",
+    "altitude_factor": "2,240m altitude produces 22% less air resistance; teams run maximum wing angles yet achieve Monza-like top speeds (>350 km/h). Turbochargers spin faster to compensate for thin air, stressing cooling packages.",
+    "checo_historical": "P3 in 2021 and 2022. High home crowd pressure; aggressive start behavior."
+  }
+}

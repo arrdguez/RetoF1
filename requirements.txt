@@ -1,0 +1,16 @@
+# Core Data & Science
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Formula 1 Telemetry & Data APIs
+fastf1>=3.4.0
+requests>=2.31.0
+
+# Visualization & CLI UX
+matplotlib>=3.7.0
+rich>=13.7.0
+
+# Settings & Validation
+pydantic>=2.5.0
+python-dotenv>=1.0.0

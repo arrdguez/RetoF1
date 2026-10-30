@@ -1,0 +1,61 @@
+{
+  "races": [
+    {
+      "round": 17,
+      "race_name": "Azerbaijan Grand Prix (Baku)",
+      "circuit_type": "Street / High Speed Straight",
+      "results": {
+        "pole": "LEC",
+        "podium": ["PIA", "LEC", "RUS"],
+        "fastest_lap": "NOR",
+        "checo_perez": {
+          "grid": 4,
+          "finish": "DNF",
+          "reason": "Late race contact with Sainz while fighting for P2"
+        },
+        "safety_cars_physical": 1,
+        "vsc": 1
+      }
+    },
+    {
+      "round": 18,
+      "race_name": "Singapore Grand Prix (Marina Bay)",
+      "circuit_type": "Street / High Downforce / High Degradation",
+      "results": {
+        "pole": "NOR",
+        "podium": ["NOR", "VER", "PIA"],
+        "fastest_lap": "RIC",
+        "checo_perez": {
+          "grid": 13,
+          "finish": 10,
+          "reason": "Finished in points"
+        },
+        "safety_cars_physical": 0,
+        "vsc": 0
+      }
+    },
+    {
+      "round": 19,
+      "race_name": "United States Grand Prix (Austin - COTA)",
+      "circuit_type": "Permanent / High-Speed S's & Long Straight",
+      "results": {
+        "pole": "NOR",
+        "podium": ["LEC", "SAI", "VER"],
+        "fastest_lap": "COL",
+        "checo_perez": {
+          "grid": 9,
+          "finish": 7,
+          "reason": "Solid recovery drive"
+        },
+        "safety_cars_physical": 1,
+        "vsc": 0
+      }
+    }
+  ],
+  "team_form_trend": {
+    "Ferrari": "High momentum (P1-P2 in COTA, strong low-speed traction, excellent brake efficiency)",
+    "Red Bull": "Recovering balance, strong straight-line speed, Mexico track historically dominant (VER won 5 times)",
+    "McLaren": "Consistent frontrunner, high aerodynamic efficiency, vulnerable to straight-line top speed deficit",
+    "Mercedes": "Inconsistent balance in high track temperatures, sensitive to altitude cooling"
+  }
+}

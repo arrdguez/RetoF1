@@ -1,0 +1,123 @@
+[
+  {
+    "driver_id": "max_verstappen",
+    "code": "VER",
+    "name": "Max Verstappen",
+    "team": "Red Bull Racing",
+    "base_quali_rating": 98.5,
+    "base_race_rating": 99.0,
+    "reliability_rating": 96.0,
+    "mexico_track_affinity": 98.0
+  },
+  {
+    "driver_id": "lando_norris",
+    "code": "NOR",
+    "name": "Lando Norris",
+    "team": "McLaren",
+    "base_quali_rating": 98.0,
+    "base_race_rating": 97.5,
+    "reliability_rating": 95.0,
+    "mexico_track_affinity": 92.0
+  },
+  {
+    "driver_id": "charles_leclerc",
+    "code": "LEC",
+    "name": "Charles Leclerc",
+    "team": "Ferrari",
+    "base_quali_rating": 98.0,
+    "base_race_rating": 96.5,
+    "reliability_rating": 94.0,
+    "mexico_track_affinity": 94.0
+  },
+  {
+    "driver_id": "oscar_piastri",
+    "code": "PIA",
+    "name": "Oscar Piastri",
+    "team": "McLaren",
+    "base_quali_rating": 96.0,
+    "base_race_rating": 95.5,
+    "reliability_rating": 95.0,
+    "mexico_track_affinity": 90.0
+  },
+  {
+    "driver_id": "carlos_sainz",
+    "code": "SAI",
+    "name": "Carlos Sainz",
+    "team": "Ferrari",
+    "base_quali_rating": 96.0,
+    "base_race_rating": 95.0,
+    "reliability_rating": 93.0,
+    "mexico_track_affinity": 93.0
+  },
+  {
+    "driver_id": "george_russell",
+    "code": "RUS",
+    "name": "George Russell",
+    "team": "Mercedes",
+    "base_quali_rating": 95.0,
+    "base_race_rating": 94.0,
+    "reliability_rating": 93.0,
+    "mexico_track_affinity": 91.0
+  },
+  {
+    "driver_id": "lewis_hamilton",
+    "code": "HAM",
+    "name": "Lewis Hamilton",
+    "team": "Mercedes",
+    "base_quali_rating": 95.0,
+    "base_race_rating": 95.0,
+    "reliability_rating": 95.0,
+    "mexico_track_affinity": 95.0
+  },
+  {
+    "driver_id": "sergio_perez",
+    "code": "PER",
+    "name": "Sergio Pérez",
+    "team": "Red Bull Racing",
+    "base_quali_rating": 92.5,
+    "base_race_rating": 93.5,
+    "reliability_rating": 92.0,
+    "mexico_track_affinity": 94.0,
+    "home_race_multiplier": 1.05
+  },
+  {
+    "driver_id": "fernando_alonso",
+    "code": "ALO",
+    "name": "Fernando Alonso",
+    "team": "Aston Martin",
+    "base_quali_rating": 91.0,
+    "base_race_rating": 92.0,
+    "reliability_rating": 92.0,
+    "mexico_track_affinity": 90.0
+  },
+  {
+    "driver_id": "nico_hulkenberg",
+    "code": "HUL",
+    "name": "Nico Hülkenberg",
+    "team": "Haas",
+    "base_quali_rating": 90.0,
+    "base_race_rating": 88.0,
+    "reliability_rating": 90.0,
+    "mexico_track_affinity": 87.0
+  },
+  {
+    "driver_id": "yuki_tsunoda",
+    "code": "TSU",
+    "name": "Yuki Tsunoda",
+    "team": "RB",
+    "base_quali_rating": 89.0,
+    "base_race_rating": 88.0,
+    "reliability_rating": 89.0,
+    "mexico_track_affinity": 86.0
+  },
+  {
+    "driver_id": "alex_albon",
+    "code": "ALB",
+    "name": "Alexander Albon",
+    "team": "Williams",
+    "base_quali_rating": 89.5,
+    "base_race_rating": 87.5,
+    "reliability_rating": 88.0,
+    "mexico_track_affinity": 88.0
+  }
+]
