@@ -1,0 +1,606 @@
+{
+  "years": 9,
+  "mean_points": 45.0,
+  "max_points": 55,
+  "winner_accuracy": 0.444,
+  "pole_accuracy": 0.111,
+  "fastest_lap_accuracy": 0.0,
+  "brier_winner": 0.7963,
+  "baseline_leader_winner_accuracy": 0.444,
+  "rows": [
+    {
+      "year": 2016,
+      "pred_winner": "ROS",
+      "act_winner": "HAM",
+      "pred_pole": "ROS",
+      "act_pole": "HAM",
+      "pred_podium": [
+        "ROS",
+        "HAM",
+        "RIC"
+      ],
+      "act_podium": "HAM",
+      "pred_fl": "ROS",
+      "act_fl": "RIC",
+      "winner_hit": false,
+      "pole_hit": false,
+      "points": 45,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "ROS",
+          "actual": "HAM",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "ROS",
+          "actual": "HAM",
+          "points": 5,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "HAM",
+          "actual": "ROS",
+          "points": 5,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "RIC",
+          "actual": "RIC",
+          "points": 10,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "ROS",
+          "actual": "RIC",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    },
+    {
+      "year": 2017,
+      "pred_winner": "HAM",
+      "act_winner": "VER",
+      "pred_pole": "HAM",
+      "act_pole": "VET",
+      "pred_podium": [
+        "HAM",
+        "BOT",
+        "VET"
+      ],
+      "act_podium": "VER",
+      "pred_fl": "HAM",
+      "act_fl": "VET",
+      "winner_hit": false,
+      "pole_hit": false,
+      "points": 35,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "HAM",
+          "actual": "VET",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "HAM",
+          "actual": "VER",
+          "points": 0,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "BOT",
+          "actual": "BOT",
+          "points": 10,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "VET",
+          "actual": "RAI",
+          "points": 0,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "HAM",
+          "actual": "VET",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    },
+    {
+      "year": 2018,
+      "pred_winner": "HAM",
+      "act_winner": "VER",
+      "pred_pole": "HAM",
+      "act_pole": "RIC",
+      "pred_podium": [
+        "HAM",
+        "VET",
+        "VER"
+      ],
+      "act_podium": "VER",
+      "pred_fl": "HAM",
+      "act_fl": "BOT",
+      "winner_hit": false,
+      "pole_hit": false,
+      "points": 40,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "HAM",
+          "actual": "RIC",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "HAM",
+          "actual": "VER",
+          "points": 0,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "VET",
+          "actual": "VET",
+          "points": 10,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "VER",
+          "actual": "RAI",
+          "points": 5,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "HAM",
+          "actual": "BOT",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    },
+    {
+      "year": 2019,
+      "pred_winner": "HAM",
+      "act_winner": "HAM",
+      "pred_pole": "HAM",
+      "act_pole": "LEC",
+      "pred_podium": [
+        "HAM",
+        "BOT",
+        "VER"
+      ],
+      "act_podium": "HAM",
+      "pred_fl": "HAM",
+      "act_fl": "LEC",
+      "winner_hit": true,
+      "pole_hit": false,
+      "points": 45,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "HAM",
+          "actual": "LEC",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "HAM",
+          "actual": "HAM",
+          "points": 15,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "BOT",
+          "actual": "VET",
+          "points": 5,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "VER",
+          "actual": "BOT",
+          "points": 0,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "HAM",
+          "actual": "LEC",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    },
+    {
+      "year": 2021,
+      "pred_winner": "VER",
+      "act_winner": "VER",
+      "pred_pole": "VER",
+      "act_pole": "BOT",
+      "pred_podium": [
+        "VER",
+        "HAM",
+        "BOT"
+      ],
+      "act_podium": "VER",
+      "pred_fl": "VER",
+      "act_fl": "BOT",
+      "winner_hit": true,
+      "pole_hit": false,
+      "points": 50,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "VER",
+          "actual": "BOT",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "VER",
+          "actual": "VER",
+          "points": 15,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "HAM",
+          "actual": "HAM",
+          "points": 10,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "BOT",
+          "actual": "PER",
+          "points": 0,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "VER",
+          "actual": "BOT",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    },
+    {
+      "year": 2022,
+      "pred_winner": "VER",
+      "act_winner": "VER",
+      "pred_pole": "VER",
+      "act_pole": "VER",
+      "pred_podium": [
+        "VER",
+        "HAM",
+        "PER"
+      ],
+      "act_podium": "VER",
+      "pred_fl": "VER",
+      "act_fl": "RUS",
+      "winner_hit": true,
+      "pole_hit": true,
+      "points": 70,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "VER",
+          "actual": "VER",
+          "matched": true,
+          "points": 10,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "VER",
+          "actual": "VER",
+          "points": 15,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "HAM",
+          "actual": "HAM",
+          "points": 10,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "PER",
+          "actual": "PER",
+          "points": 10,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "VER",
+          "actual": "RUS",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    },
+    {
+      "year": 2023,
+      "pred_winner": "VER",
+      "act_winner": "VER",
+      "pred_pole": "VER",
+      "act_pole": "LEC",
+      "pred_podium": [
+        "VER",
+        "HAM",
+        "PER"
+      ],
+      "act_podium": "VER",
+      "pred_fl": "VER",
+      "act_fl": "HAM",
+      "winner_hit": true,
+      "pole_hit": false,
+      "points": 50,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "VER",
+          "actual": "LEC",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "VER",
+          "actual": "VER",
+          "points": 15,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "HAM",
+          "actual": "HAM",
+          "points": 10,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "PER",
+          "actual": "LEC",
+          "points": 0,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "VER",
+          "actual": "HAM",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    },
+    {
+      "year": 2024,
+      "pred_winner": "VER",
+      "act_winner": "SAI",
+      "pred_pole": "VER",
+      "act_pole": "SAI",
+      "pred_podium": [
+        "VER",
+        "LEC",
+        "NOR"
+      ],
+      "act_podium": "SAI",
+      "pred_fl": "VER",
+      "act_fl": "LEC",
+      "winner_hit": false,
+      "pole_hit": false,
+      "points": 35,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "VER",
+          "actual": "SAI",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "VER",
+          "actual": "SAI",
+          "points": 0,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "LEC",
+          "actual": "NOR",
+          "points": 5,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "NOR",
+          "actual": "LEC",
+          "points": 5,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "VER",
+          "actual": "LEC",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    },
+    {
+      "year": 2025,
+      "pred_winner": "VER",
+      "act_winner": "NOR",
+      "pred_pole": "VER",
+      "act_pole": "NOR",
+      "pred_podium": [
+        "VER",
+        "NOR",
+        "PIA"
+      ],
+      "act_podium": "NOR",
+      "pred_fl": "VER",
+      "act_fl": "RUS",
+      "winner_hit": false,
+      "pole_hit": false,
+      "points": 35,
+      "breakdown": {
+        "pole_position": {
+          "predicted": "VER",
+          "actual": "NOR",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "podio_1st": {
+          "predicted": "VER",
+          "actual": "NOR",
+          "points": 5,
+          "max": 15
+        },
+        "podio_2nd": {
+          "predicted": "NOR",
+          "actual": "LEC",
+          "points": 5,
+          "max": 10
+        },
+        "podio_3rd": {
+          "predicted": "PIA",
+          "actual": "VER",
+          "points": 0,
+          "max": 10
+        },
+        "vuelta_rapida": {
+          "predicted": "VER",
+          "actual": "RUS",
+          "matched": false,
+          "points": 0,
+          "max": 10
+        },
+        "checo_position": {
+          "predicted": "P10",
+          "actual": "P10",
+          "matched": true,
+          "points": 15,
+          "max": 15
+        },
+        "safety_cars": {
+          "predicted": 0,
+          "actual": 0,
+          "matched": true,
+          "points": 10,
+          "max": 10
+        }
+      }
+    }
+  ]
+}

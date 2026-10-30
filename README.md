@@ -6,6 +6,26 @@ Este repositorio implementa un sistema integral de **análisis de telemetría, f
 
 ---
 
+## 🎯 Resultado principal (GP de México 2026)
+
+Predicción canónica generada con datos reales (18 rondas de 2026 + histórico México 2015–2025). Informe completo en [`reports/informe_cientifico.md`](reports/informe_cientifico.md).
+
+| # | Punto | Pronóstico | Prob. | Método estadístico | Puntos |
+|---|-------|-----------|-------|--------------------|--------|
+| 1 | Pole (Q3) | **ANT — Antonelli** | 16.4 % | Plackett-Luce + Monte Carlo | 10 |
+| 2 | Podio (1º·2º·3º) | **ANT · HAM · VER** | 0.5 % conjunta | Plackett-Luce + optimización EV | 35 |
+| 3 | Vuelta rápida | **HAM — Hamilton** | 15.4 % | Rating Bradley-Terry × historial | 10 |
+| 4 | Checo Pérez | **DNF** (P17–P21 si termina) | 15.9 % | Distribución empírica Monte Carlo | 15 |
+| 5 | Safety Cars físicos | **0** | 48.2 % | Poisson-Gamma Bayesiano | 10 |
+
+**Metodología:** rating Bradley-Terry (máxima verosimilitud sobre las 18 rondas 2026) + equipo + momento (últimas 4 carreras) + afinidad México → Plackett-Luce → Monte Carlo (20 000 iteraciones) → Poisson-Gamma Bayesiano → optimización de puntos esperados.
+
+**Backtest (leave-one-out 2016–2025):** 45.0/55 puntos medios, 44 % de acierto de ganador (empata con el baseline "líder del campeonato"). Sin valores a mano, sin regresión sintética, sin Random Forest sobre muestras diminutas.
+
+Para reproducir: `python main.py --predict` (o `--hybrid` para regenerar el DTO/dashboard).
+
+---
+
 ## 🎯 Los 5 Puntos a Predecir & Sistema de Puntuación
 
 | # | Punto a Predecir | Criterio de Puntuación | Puntos Máximos |
@@ -41,10 +61,11 @@ RetoF1/
 │   │   ├── checo_analyzer.py# Modelo específico para Checo Pérez (histórico CDMX, riesgo curva 1)
 │   │   └── safety_car_model.py# Distribución de probabilidad de Safety Car físico
 │   ├── models/              # Simulación & Pronóstico
-│   │   ├── monte_carlo_sim.py # Simulador Monte Carlo (2,500+ carreras por corrida)
-│   │   └── predictor.py     # Agregador oficial de las 5 predicciones con porcentajes
+│   │   ├── statistical_engine.py # Motor canónico: Bradley-Terry + Plackett-Luce + Monte Carlo + Poisson-Gamma
+│   │   └── predictor.py     # Alias del motor (single source of truth)
 │   ├── evaluation/
-│   │   └── scoring.py       # Validador y calculador de puntos oficial del desafío
+│   │   ├── scoring.py       # Validador y calculador de puntos oficial del desafío
+│   │   └── backtest.py      # Backtest temporal leave-one-out 2016-2025
 │   └── prompts/
 │       └── copilot_assistant.py # Generador dinámico de prompts con telemetría inyectada
 ├── prompts/
@@ -93,7 +114,7 @@ La mecánica del concurso solicita:
 
 1. Abre este proyecto en **VS Code** o tu IDE con GitHub Copilot habilitado.
 2. Abre **GitHub Copilot Chat** (`Ctrl+Alt+I` o icono lateral).
-3. Utiliza la guía en [`prompts/copilot_prompts.md`](file:///home/rfeynman/Dropbox/src/RetoF1/prompts/copilot_prompts.md).
+3. Utiliza la guía en [`prompts/copilot_prompts.md`](prompts/copilot_prompts.md).
 4. El prompt inyecta los resultados de nuestra simulación Monte Carlo y el análisis físico de los 2,240 metros sobre el nivel del mar, lo que genera una respuesta técnica de alto impacto para la captura de pantalla de entrega.
 
 ---
@@ -107,9 +128,9 @@ La mecánica del concurso solicita:
 2. **Refrigeración Crítica:**
    - La masa de aire que entra a los radiadores y ductos de freno cae en ~25%, provocando sobrecalentamiento térmico severo y mayor riesgo de fallas de frenos y MGU-H/turbocompresor (girando cerca de las 125,000 RPM límite).
 3. **Peligro en Curva 1:**
-   - La recta de 890 metros hasta la primera frenada es la más larga del calendario, generando un embudo de 20 monoplazas que dispara la probabilidad histórica de Safety Car físico en la vuelta 1 al **54-70%**.
-4. **Factor Checo Pérez:**
-   - Historial en México: P3 (2021), P3 (2022), DNF (2023 por contacto en curva 1), P17 (2024).
+   - La recta de 890 metros hasta la primera frenada es la más larga del calendario, generando un embudo de 20 monoplazas que eleva el riesgo de Safety Car físico en la vuelta 1.
+4. **Factor Checo Pérez (2026):**
+   - Corre con **Cadillac**, escudería debutante con **0 puntos** en 2026 (11º de 11 constructores). El modelo lo ubica en la zona **P17–P21 o DNF**, no en los puntos.
 
 ---
 

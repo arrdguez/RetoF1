@@ -138,6 +138,18 @@ Moda y pick EV-óptimo: **0 Safety Cars**. λ posterior: media 0.80, IC 90 % [0.
 
 ### Backtest realizado
 - **Safety Cars (leave-one-out, n=4):** se predijo cada edición 2021–2024 con las otras tres. Resultado: **1 acierto de 4**, **Brier 0.691**. Interpretación honesta: con 4 ediciones la tasa λ es débil y el conteo de SC es esencialmente impredecible; la apuesta "0 SC" es la de máximo valor esperado (4.82 pts), pero su calibración es limitada.
+- **Pole, podio y vuelta rápida (leave-one-out 2016–2025, n=9):** se predijo cada edición con solo la clasificación previa a esa carrera y el histórico de México de años anteriores (sin fuga temporal). Resultado (modelo simplificado forma+afinidad, afinidad al 15 % como en producción):
+
+| Métrica | Valor |
+|---------|-------|
+| Puntos medios (pole+podio+FL, máx 55) | **45.0 / 55** |
+| Acierto de ganador | **44 %** (4/9) |
+| Acierto de pole | 11 % (1/9) |
+| Acierto de vuelta rápida | 0 % (0/9) |
+| Brier (ganador) | 0.796 |
+| Referencia simple (líder del campeonato) | 44 % |
+
+**Lectura honesta:** el modelo empata con la referencia simple "apostar al líder del campeonato" para el ganador, y la pole/vuelta rápida son casi impredecibles con estos datos. El valor real del sistema no está en acertar el podio exacto (imposible de forma fiable), sino en: (1) la corrección de Checo/Cadillac (categoría 2026 específica, no retro-testable), (2) reportar incertidumbre honesta en vez de confianzas inventadas, y (3) la optimización de EV sobre puntos parciales.
 
 ### Anclas de calibración observadas en el histórico de México (2015–2025)
 - La pole convierte en victoria el 50 % de las veces.

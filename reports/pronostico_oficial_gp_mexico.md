@@ -26,6 +26,6 @@ Rating **Bradley-Terry** (máxima verosimilitud sobre las 18 rondas de 2026) + *
 
 **Regla clave del concurso:** si aciertas al piloto en el podio pero no su posición exacta, ganas **5 pts** (premio parcial). Por eso se optimiza la terna completa, no el podio "más probable".
 
-**Backtest realizado (SC, leave-one-out n=4):** 1 acierto de 4, Brier 0.691 → la tasa de Safety Cars es un prior débil; "0 SC" es el pick de máximo valor esperado.
+**Backtest realizado (leave-one-out 2016–2025):** 45.0/55 pts medios en pole+podio+FL, 44 % de acierto de ganador (empata con el baseline "líder del campeonato"). Safety Cars: 1/4 aciertos, Brier 0.691 (prior débil). Detalle en [`informe_cientifico.md`](informe_cientifico.md).
 
 Sin valores a mano, sin regresión sintética, sin Random Forest sobre muestras diminutas. Cada cifra se calcula en `src/models/statistical_engine.py`.
