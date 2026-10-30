@@ -1,0 +1,22 @@
+{
+  "metric": "physical_safety_cars",
+  "note": "Conteo de Safety Cars FISICOS (no VSC) por edicion del GP de Mexico en la era moderna (2015+). Fuente: informes de carrera / Wikipedia. Solo se listan ediciones con conteo verificado.",
+  "source": "Wikipedia / race reports (compilado manualmente, trazable)",
+  "editions": [
+    {"season": 2021, "physical_sc": 1, "note": "colision en curva 1 (vuelta 1)"},
+    {"season": 2022, "physical_sc": 0, "note": "sin Safety Car fisico"},
+    {"season": 2023, "physical_sc": 1, "note": "accidente de Magnussen"},
+    {"season": 2024, "physical_sc": 1, "note": "toque Tsunoda/Albon"}
+  ],
+  "sample_size": 4,
+  "total_physical_sc": 3,
+  "lambda_empirical": 0.75,
+  "poisson": {
+    "p_0": 47.24,
+    "p_1": 35.43,
+    "p_2": 13.29,
+    "p_3": 3.32,
+    "p_3plus": 0.72
+  },
+  "mode": 0
+}
