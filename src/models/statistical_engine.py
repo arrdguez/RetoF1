@@ -27,7 +27,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from scipy.stats import poisson
+from scipy.stats import gamma, nbinom
 
 from config.settings import PROCESSED_DATA_DIR, RAW_DATA_DIR, SCORING_CONFIG
 from src.features.altitude_physics import AltitudePhysicsModel
@@ -39,28 +39,42 @@ from src.features.altitude_physics import AltitudePhysicsModel
 # Mapa de equipos 2026 (R19 México). Fuente: Wikipedia "2026 F1 season" (Entries).
 # Provenance marcado explícito: es la única parte no derivada de la API de resultados.
 TEAMS_2026: Dict[str, str] = {
-    "ANT": "Mercedes",
-    "RUS": "Mercedes",
-    "HAM": "Ferrari",
-    "LEC": "Ferrari",
-    "VER": "Red Bull",
-    "HAD": "Red Bull",
-    "NOR": "McLaren",
-    "PIA": "McLaren",
-    "LAW": "Racing Bulls",
-    "LIN": "Racing Bulls",
-    "GAS": "Alpine",
-    "COL": "Alpine",
-    "OCO": "Haas",
-    "BEA": "Haas",
-    "HUL": "Audi",
-    "BOR": "Audi",
-    "ALO": "Aston Martin",
-    "STR": "Aston Martin",
-    "ALB": "Williams",
-    "SAI": "Williams",
-    "PER": "Cadillac",
-    "BOT": "Cadillac",
+    "ANT": "mercedes",
+    "RUS": "mercedes",
+    "HAM": "ferrari",
+    "LEC": "ferrari",
+    "VER": "red_bull",
+    "HAD": "red_bull",
+    "NOR": "mclaren",
+    "PIA": "mclaren",
+    "LAW": "rb",
+    "LIN": "rb",
+    "GAS": "alpine",
+    "COL": "alpine",
+    "OCO": "haas",
+    "BEA": "haas",
+    "HUL": "audi",
+    "BOR": "audi",
+    "ALO": "aston_martin",
+    "STR": "aston_martin",
+    "ALB": "williams",
+    "SAI": "williams",
+    "PER": "cadillac",
+    "BOT": "cadillac",
+}
+
+TEAM_DISPLAY: Dict[str, str] = {
+    "mercedes": "Mercedes",
+    "ferrari": "Ferrari",
+    "red_bull": "Red Bull",
+    "mclaren": "McLaren",
+    "rb": "Racing Bulls",
+    "alpine": "Alpine",
+    "haas": "Haas",
+    "audi": "Audi",
+    "williams": "Williams",
+    "aston_martin": "Aston Martin",
+    "cadillac": "Cadillac",
 }
 
 DRIVER_NAMES: Dict[str, str] = {
@@ -89,11 +103,14 @@ DRIVER_NAMES: Dict[str, str] = {
 }
 
 # Pesos del modelo (hiperparámetros documentados; no calibrados a un resultado).
-# La forma actual domina (~50%), el equipo le sigue (~35%) y la afinidad de
-# circuito es un ajuste modesto (~15%) porque en F1 el coche explica gran parte
-# del rendimiento.
-W_FORM = 0.50
-W_TEAM = 0.35
+# - Forma 2026 (puntos) ~35%: ritmo general de la temporada.
+# - Victorias 2026 ~20%: señal de dominancia (predecir "quién gana" necesita
+#   las victorias, no solo la consistencia de puntos).
+# - Equipo ~30%: en F1 el coche explica gran parte del rendimiento.
+# - Afinidad México ~15%: ajuste modesto por dominio de circuito.
+W_FORM = 0.35
+W_WINS = 0.20
+W_TEAM = 0.30
 W_MX = 0.15
 
 # Ruido de Monte Carlo (multiplicativo, log-normal) para cuantificar incertidumbre.
@@ -116,6 +133,9 @@ class StatisticalF1Predictor:
     def __init__(self, n_simulations: int = 20000, seed: int = 42):
         self.n_simulations = n_simulations
         self.seed = seed
+        self._mx_stats = (
+            self._load_mexico_stats()
+        )  # cache: se usa en drivers y vuelta rápida
         self.drivers: List[Dict[str, Any]] = self._build_drivers()
         self.sc_model = self._load_sc_model()
         self.weather = self._load_weather()
@@ -143,7 +163,8 @@ class StatisticalF1Predictor:
         for c in cs["MRData"]["StandingsTable"]["StandingsLists"][0][
             "ConstructorStandings"
         ]:
-            pts_ctor[c["Constructor"]["name"]] = float(c["points"])
+            ctor_id = c["Constructor"]["constructorId"]
+            pts_ctor[ctor_id] = float(c["points"])
 
         return pts_driver, pts_ctor, wins_driver
 
@@ -170,11 +191,15 @@ class StatisticalF1Predictor:
 
     def _build_drivers(self) -> List[Dict[str, Any]]:
         pts_d, pts_c, wins = self._load_standings()
-        mx = self._load_mexico_stats()
+        mx = self._mx_stats
         drivers = []
-        for code, team in TEAMS_2026.items():
+        for code, team_id in TEAMS_2026.items():
             dpts = pts_d.get(code, 0.0)
-            tpts = pts_c.get(team, 0.0)
+            if team_id not in pts_c:
+                raise ValueError(
+                    f"ConstructorId '{team_id}' no encontrado en standings 2026 (driver {code})"
+                )
+            tpts = pts_c[team_id]
             m = mx.get(code, None)
 
             form = math.log(1.0 + dpts)
@@ -193,7 +218,7 @@ class StatisticalF1Predictor:
                 mx_aff = 0.0
                 dnf_rate = 0.0
 
-            is_new_team = team == "Cadillac"
+            is_new_team = team_id == "cadillac"
             mechanical = BASE_MECHANICAL_DNF + (
                 NEW_TEAM_DNF_BONUS if is_new_team else 0.0
             )
@@ -204,7 +229,8 @@ class StatisticalF1Predictor:
                 {
                     "code": code,
                     "name": DRIVER_NAMES[code],
-                    "team": team,
+                    "team": TEAM_DISPLAY.get(team_id, team_id),
+                    "team_id": team_id,
                     "points_2026": dpts,
                     "wins_2026": wins.get(code, 0),
                     "team_points_2026": tpts,
@@ -223,10 +249,12 @@ class StatisticalF1Predictor:
         sr: Dict[str, float] = {}
         for d in self.drivers:
             form = math.log(1.0 + d["points_2026"])
+            wins_log = math.log(1.0 + d["wins_2026"])
             team_log = math.log(1.0 + d["team_points_2026"])
             mx_aff = d["mexico_affinity"]
-            sq[d["code"]] = W_FORM * form + W_TEAM * team_log + W_MX * mx_aff
-            sr[d["code"]] = W_FORM * form + W_TEAM * team_log + W_MX * mx_aff
+            s = W_FORM * form + W_WINS * wins_log + W_TEAM * team_log + W_MX * mx_aff
+            sq[d["code"]] = s
+            sr[d["code"]] = s
         return sq, sr
 
     def _load_sc_model(self) -> Dict[str, Any]:
@@ -292,23 +320,20 @@ class StatisticalF1Predictor:
 
     # -- Vuelta rápida ------------------------------------------------------
 
-    def _fastest_lap_model(
-        self, sr: Dict[str, float], top10: List[str]
-    ) -> Dict[str, float]:
+    def _fastest_lap_model(self, sr: Dict[str, float]) -> Dict[str, float]:
         """
         Modelo honesto de vuelta rápida: combinación de ritmo de carrera y
         afinidad histórica de vuelta rápida en México. NO es una regresión
         simulada: es una distribución construida a partir de skill real.
+        Todos los pilotos son elegibles (el objetivo es el giro más rápido,
+        no un punto de campeonato); el peso de los rezagados es naturalmente
+        mínimo por su skill bajo.
         """
-        fl_hist = self._load_mexico_stats()
         weights = {}
         for d in self.drivers:
             c = d["code"]
-            if c not in top10:
-                continue
-            w = math.exp(sr[c]) * (
-                1.0 + 0.5 * (fl_hist.get(c, {}).get("fastest_laps", 0) / 2.0)
-            )
+            fl_hist = self._mx_stats.get(c, {})
+            w = math.exp(sr[c]) * (1.0 + 0.5 * (fl_hist.get("fastest_laps", 0) / 2.0))
             weights[c] = w
         total = sum(weights.values())
         return {c: round(w / total, 4) for c, w in weights.items()}
@@ -351,9 +376,8 @@ class StatisticalF1Predictor:
             elif "PER" in classified:
                 checo[f"P{classified.index('PER') + 1}"] += 1
 
-            # Vuelta rápida (top-10 proyectado)
-            top10 = classified[:10] if classified else []
-            flw = self._fastest_lap_model(sr, top10)
+            # Vuelta rápida (todos elegibles; peso por ritmo + historial)
+            flw = self._fastest_lap_model(sr)
             if flw:
                 fl_driver = random.choices(
                     list(flw.keys()), weights=list(flw.values()), k=1
@@ -556,10 +580,36 @@ class StatisticalF1Predictor:
         }
 
     def _safety_car_prediction(self) -> Dict[str, Any]:
-        lam = self.sc_model["lambda_empirical"]
-        probs = {k: round(float(poisson.pmf(k, lam)) * 100, 2) for k in range(4)}
+        """
+        Modelo Poisson-Gamma Bayesiano para Safety Cars.
+
+        - Prior débil sobre la tasa:  lambda ~ Gamma(alpha0=1, beta0=1).
+        - Datos: n ediciones, suma de SC físicos = total.
+        - Posterior:                 lambda ~ Gamma(alpha0+total, beta0+n).
+        - Predictiva posterior (lo que importa): Binomial Negativa, que ya
+          incorpora la incertidumbre de estimar lambda con n pequeña.
+        """
+        alpha0, beta0 = 1.0, 1.0
+        n = self.sc_model["sample_size"]
+        total = self.sc_model["total_physical_sc"]
+        a_post = alpha0 + total
+        b_post = beta0 + n
+
+        # Predictiva posterior (Binomial Negativa) para k = 0,1,2,3
+        p_succ = b_post / (b_post + 1.0)
+        probs = {
+            k: round(float(nbinom.pmf(k, a_post, p_succ)) * 100, 2) for k in range(4)
+        }
+        p_3plus = round(100.0 - sum(probs.values()), 2)
         mode = max(probs, key=probs.get)
-        p_at_least_one = round((1.0 - float(poisson.pmf(0, lam))) * 100, 2)
+        p_at_least_one = round(100.0 - probs[0], 2)
+
+        # Posterior de lambda: media, moda e intervalo creíble 90%
+        lam_mean = round(a_post / b_post, 3)
+        lam_mode = round((a_post - 1.0) / b_post, 3) if a_post > 1 else 0.0
+        lam_lo = round(float(gamma.ppf(0.05, a_post, scale=1.0 / b_post)), 3)
+        lam_hi = round(float(gamma.ppf(0.95, a_post, scale=1.0 / b_post)), 3)
+
         ev = {
             k: round(SCORING_CONFIG.safety_cars_exact * p / 100.0, 2)
             for k, p in probs.items()
@@ -572,16 +622,23 @@ class StatisticalF1Predictor:
                 f"{k} Safety Car{'s' if k != 1 else ''}": f"{probs[k]}%"
                 for k in range(4)
             },
+            "distribution_3plus_pct": p_3plus,
             "expected_points_by_pick": ev,
-            "lambda_empirical": lam,
-            "lambda_base": lam,
-            "lambda_effective": lam,
-            "sample_size": self.sc_model["sample_size"],
+            "lambda_empirical": round(total / n, 3),
+            "lambda_base": round(total / n, 3),
+            "lambda_effective": round(total / n, 3),
+            "lambda_posterior_mean": lam_mean,
+            "lambda_posterior_mode": lam_mode,
+            "lambda_credible_interval_90": [lam_lo, lam_hi],
+            "sample_size": n,
+            "prior": f"Gamma(alpha={alpha0}, beta={beta0})",
+            "posterior": f"Gamma(alpha={a_post}, beta={b_post})",
             "challenge_points": SCORING_CONFIG.safety_cars_exact,
-            "methodology": f"Poisson empírico (λ={lam} de {self.sc_model['sample_size']} ediciones 2021-2024)",
+            "methodology": "Poisson-Gamma Bayesiano (predictiva Binomial Negativa)",
             "rationale": (
-                f"Con λ={lam} (3 SC físicos en 4 ediciones verificadas 2021-2024), la moda es {mode} "
-                f"Safety Car(s) ({probs[mode]}%) y P(X≥1)={p_at_least_one}%. El pick EV-óptimo es {mode} SC "
-                f"({ev[mode]} pts esperados)."
+                f"Con {total} SC físicos en {n} ediciones (2021-2024) y prior Gamma(1,1), la predictiva "
+                f"Binomial Negativa da moda {mode} Safety Car(s) ({probs[mode]}%) y P(X≥1)={p_at_least_one}%. "
+                f"La tasa posterior λ tiene media {lam_mean} e intervalo creíble 90% [{lam_lo}, {lam_hi}] "
+                f"(muestra pequeña -> incertidumbre alta). El pick EV-óptimo es {mode} SC ({ev[mode]} pts)."
             ),
         }

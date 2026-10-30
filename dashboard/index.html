@@ -16,47 +16,48 @@
   .answer{font-size:1.6rem;font-weight:800;color:var(--gold)}
   .prob{font-size:.95rem;color:var(--ok);font-weight:600;margin-top:2px}
   .pts{display:inline-block;background:rgba(255,46,77,.15);color:var(--accent);border-radius:6px;padding:2px 8px;font-size:.75rem;font-weight:700;margin-top:8px}
+  .method{display:block;color:var(--mut);font-size:.7rem;margin-top:6px}
   table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.8rem}
   th,td{text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
   th{color:var(--mut);font-weight:600}
-  .bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:2px}
-  .bar>div{height:100%;background:var(--accent)}
   .note{color:var(--mut);font-size:.78rem;margin-top:20px;border-top:1px solid var(--line);padding-top:12px}
   .tag{color:var(--gold)}
 </style>
 </head>
 <body>
 <h1>🏁 Estratega F1 — GP de México 2026</h1>
-<div class="sub">Autódromo Hermanos Rodríguez · 2,240 msnm · Ronda 19 · Corte de datos: 30–31 oct 2026 · Motor estadístico canónico (ratings 2026 + Plackett-Luce + Monte Carlo + Poisson empírico)</div>
+<div class="sub">Autódromo Hermanos Rodríguez · 2,240 msnm · Ronda 19 · Corte de datos: 30–31 oct 2026 · Motor estadístico canónico</div>
 
 <div class="grid">
   <div class="card">
     <h2>1 · Pole Position (Q3)</h2>
     <div class="answer">ANT</div>
     <div class="sub">Andrea Kimi Antonelli · Mercedes</div>
-    <div class="prob">15.1 %</div>
+    <div class="prob">15.2 %</div>
     <span class="pts">10 pts</span>
+    <span class="method">Método: Plackett-Luce + Monte Carlo</span>
     <table>
       <tr><th>Piloto</th><th>Prob.</th></tr>
-      <tr><td>ANT</td><td>15.1 %</td></tr>
-      <tr><td>HAM</td><td>13.8 %</td></tr>
-      <tr><td>VER</td><td>13.5 %</td></tr>
-      <tr><td>LEC</td><td>12.8 %</td></tr>
-      <tr><td>RUS</td><td>12.0 %</td></tr>
+      <tr><td>ANT</td><td>15.2 %</td></tr>
+      <tr><td>VER</td><td>12.4 %</td></tr>
+      <tr><td>HAM</td><td>11.1 %</td></tr>
+      <tr><td>RUS</td><td>10.9 %</td></tr>
+      <tr><td>NOR</td><td>10.8 %</td></tr>
     </table>
   </div>
 
   <div class="card">
     <h2>2 · Podio oficial (1º·2º·3º)</h2>
-    <div class="answer">ANT · VER · HAM</div>
+    <div class="answer">ANT · HAM · VER</div>
     <div class="sub">Secuencia exacta (EV-óptima)</div>
-    <div class="prob">0.7 % conjunta · 9.1 pts esperados</div>
+    <div class="prob">0.4 % conjunta · 8.4 pts esperados</div>
     <span class="pts">35 pts</span>
+    <span class="method">Método: Plackett-Luce + optimización de EV</span>
     <table>
       <tr><th>Pos.</th><th>Piloto</th><th>Marginal</th></tr>
-      <tr><td>1º</td><td>ANT</td><td>14.9 %</td></tr>
-      <tr><td>2º</td><td>VER</td><td>14.7 %</td></tr>
-      <tr><td>3º</td><td>HAM</td><td>12.7 %</td></tr>
+      <tr><td>1º</td><td>ANT</td><td>15.7 %</td></tr>
+      <tr><td>2º</td><td>HAM</td><td>11.5 %</td></tr>
+      <tr><td>3º</td><td>VER</td><td>11.6 %</td></tr>
     </table>
   </div>
 
@@ -64,13 +65,14 @@
     <h2>3 · Vuelta rápida</h2>
     <div class="answer">RUS</div>
     <div class="sub">George Russell · Mercedes</div>
-    <div class="prob">16.3 %</div>
+    <div class="prob">14.9 %</div>
     <span class="pts">10 pts</span>
+    <span class="method">Método: pesos ritmo × historial</span>
     <table>
       <tr><th>Piloto</th><th>Prob.</th></tr>
-      <tr><td>RUS</td><td>16.3 %</td></tr>
-      <tr><td>LEC</td><td>16.2 %</td></tr>
-      <tr><td>HAM</td><td>15.4 %</td></tr>
+      <tr><td>RUS</td><td>14.9 %</td></tr>
+      <tr><td>ANT</td><td>13.4 %</td></tr>
+      <tr><td>LEC</td><td>13.4 %</td></tr>
     </table>
   </div>
 
@@ -78,33 +80,37 @@
     <h2>4 · Posición de Checo Pérez</h2>
     <div class="answer">P20</div>
     <div class="sub">Sergio Pérez · Cadillac</div>
-    <div class="prob">16.5 % · DNF 14.7 %</div>
+    <div class="prob">15.9 % · DNF 15.5 %</div>
     <span class="pts">15 pts</span>
+    <span class="method">Método: distribución empírica Monte Carlo</span>
     <table>
       <tr><th>Resultado</th><th>Prob.</th></tr>
-      <tr><td>P20</td><td>16.5 %</td></tr>
-      <tr><td>P19</td><td>15.6 %</td></tr>
-      <tr><td>DNF</td><td>14.7 %</td></tr>
+      <tr><td>P20</td><td>15.9 %</td></tr>
+      <tr><td>DNF</td><td>15.5 %</td></tr>
+      <tr><td>P19</td><td>15.4 %</td></tr>
     </table>
   </div>
 
   <div class="card">
     <h2>5 · Safety Cars físicos</h2>
     <div class="answer">0</div>
-    <div class="sub">Poisson empírico λ=0.75 (n=4)</div>
-    <div class="prob">47.2 % (moda y EV-óptimo)</div>
+    <div class="sub">Poisson-Gamma Bayesiano (n=4)</div>
+    <div class="prob">48.2 % (moda y EV-óptimo)</div>
     <span class="pts">10 pts</span>
+    <span class="method">Método: Poisson-Gamma (predictiva Binomial Negativa)</span>
     <table>
       <tr><th>Conteo</th><th>Prob.</th></tr>
-      <tr><td>0</td><td>47.2 %</td></tr>
-      <tr><td>1</td><td>35.4 %</td></tr>
-      <tr><td>2</td><td>13.3 %</td></tr>
+      <tr><td>0</td><td>48.2 %</td></tr>
+      <tr><td>1</td><td>32.2 %</td></tr>
+      <tr><td>2</td><td>13.4 %</td></tr>
+      <tr><td>3</td><td>4.5 %</td></tr>
     </table>
   </div>
 </div>
 
 <div class="note">
-  <span class="tag">Metodología:</span> ratings 2026 (50 % forma + 35 % equipo + 15 % afinidad México) → Plackett-Luce → Monte Carlo (20 000 iteraciones) → Poisson empírico → optimización de puntos esperados. Sin valores a mano, sin regresión sintética, sin Random Forest sobre muestras diminutas.
+  <span class="tag">Metodología:</span> ratings 2026 (35 % forma + 20 % victorias + 30 % equipo + 15 % afinidad México) → Plackett-Luce → Monte Carlo (20 000 iteraciones, semilla 42) → Poisson-Gamma Bayesiano (SC) → optimización de puntos esperados (EV). Sin valores a mano, sin regresión sintética, sin Random Forest sobre muestras diminutas.
+  <br><span class="tag">Regla clave:</span> si aciertas al piloto en el podio pero no su posición exacta, ganas 5 pts (premio parcial).
   <br><span class="tag">Fuentes:</span> Jolpica/Ergast (standings R18 2026 + histórico México 2015–2025), Wikipedia (equipos 2026, trazable). Informe completo: <code>reports/informe_cientifico.md</code> · DTO: <code>reports/strategy_prediction_dto.json</code>.
 </div>
 </body>

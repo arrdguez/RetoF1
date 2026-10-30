@@ -40,7 +40,7 @@ def generate_and_export_dto(pred_data: Dict[str, Any]) -> Dict[str, Any]:
             "circuit": "Autodromo Hermanos Rodriguez",
             "elevationMeters": 2240,
             "airDensityRatio": pred_data["altitude_physics"]["density_ratio"],
-            "pipelineType": "Canonical_Monte_Carlo_And_Poisson_Unified"
+            "pipelineType": "Canonical_Monte_Carlo_And_Poisson_Unified",
         },
         "strategyPredictionDTO": {
             "point_1_polePosition": {
@@ -48,7 +48,7 @@ def generate_and_export_dto(pred_data: Dict[str, Any]) -> Dict[str, Any]:
                 "confidencePct": pole["probability_pct"],
                 "topContenders": pole["top_contenders"],
                 "methodology": pole["methodology"],
-                "awardedPoints": pole["challenge_points"]
+                "awardedPoints": pole["challenge_points"],
             },
             "point_2_officialPodium": {
                 "p1_winner": podium["p1_winner"],
@@ -57,13 +57,13 @@ def generate_and_export_dto(pred_data: Dict[str, Any]) -> Dict[str, Any]:
                 "exactSequence": podium["exact_podium_sequence"],
                 "jointProbabilityPct": podium["combination_probability_pct"],
                 "methodology": podium["methodology"],
-                "awardedPoints": podium["challenge_points"]
+                "awardedPoints": podium["challenge_points"],
             },
             "point_3_fastestLap": {
                 "predictedDriver": fl["driver"],
                 "confidencePct": fl["probability_pct"],
                 "methodology": fl["methodology"],
-                "awardedPoints": fl["challenge_points"]
+                "awardedPoints": fl["challenge_points"],
             },
             "point_4_checoPerezPosition": {
                 "predictedPosition": checo["predicted_finish"],
@@ -71,7 +71,7 @@ def generate_and_export_dto(pred_data: Dict[str, Any]) -> Dict[str, Any]:
                 "alternatives": checo["alternatives"],
                 "dnfRiskPct": checo["dnf_risk_pct"],
                 "methodology": checo["methodology"],
-                "awardedPoints": checo["challenge_points"]
+                "awardedPoints": checo["challenge_points"],
             },
             "point_5_safetyCarsPhysical": {
                 "predictedCount": sc["predicted_count"],
@@ -81,13 +81,13 @@ def generate_and_export_dto(pred_data: Dict[str, Any]) -> Dict[str, Any]:
                 "lambdaEffective": sc["lambda_effective"],
                 "lambdaBase": sc["lambda_base"],
                 "methodology": sc["methodology"],
-                "awardedPoints": sc["challenge_points"]
-            }
+                "awardedPoints": sc["challenge_points"],
+            },
         },
         "summaryScore": {
             "maximumChallengePoints": 80,
-            "projectedAccuracyScore": "High (Canonical Single Source of Truth)"
-        }
+            "projectedAccuracyScore": "No medido (backtest pendiente)",
+        },
     }
 
     # Save to file
@@ -114,60 +114,126 @@ def print_rich_report(pred_data: Dict[str, Any]):
 """
     print(banner)
 
-    print("┌──────────────────────────────────────────────────────────────────────────────────┐")
-    print("│ 1️⃣  POLE POSITION (Sábado Q3) | Modelo: Simulación Monte Carlo (10 pts)           │")
-    print("├──────────────────────────────────────────────────────────────────────────────────┤")
-    print(f"│  ▶ Piloto Pronosticado: {pole['driver']:<6} | Probabilidad: {pole['probability_pct']}%")
+    print(
+        "┌──────────────────────────────────────────────────────────────────────────────────┐"
+    )
+    print(
+        "│ 1️⃣  POLE POSITION (Sábado Q3) | Modelo: Simulación Monte Carlo (10 pts)           │"
+    )
+    print(
+        "├──────────────────────────────────────────────────────────────────────────────────┤"
+    )
+    print(
+        f"│  ▶ Piloto Pronosticado: {pole['driver']:<6} | Probabilidad: {pole['probability_pct']}%"
+    )
     print(f"│  ▶ Contendientes:       {pole['top_contenders']}")
     print(f"│  ▶ Justificación:       {pole['rationale']}")
-    print("└──────────────────────────────────────────────────────────────────────────────────┘\n")
+    print(
+        "└──────────────────────────────────────────────────────────────────────────────────┘\n"
+    )
 
-    print("┌──────────────────────────────────────────────────────────────────────────────────┐")
-    print("│ 2️⃣  PODIO OFICIAL EXACTO (Domingo) | Modelo: Probabilidad Conjunta MC (35 pts)   │")
-    print("├──────────────────────────────────────────────────────────────────────────────────┤")
-    print(f"│  ▶ 1° Lugar (Ganador, 15 pts): {podium['p1_winner']} (Probabilidad: {podium['p1_prob_pct']}%)")
-    print(f"│  ▶ 2° Lugar (10 pts):          {podium['p2_second']} (Probabilidad: {podium['p2_prob_pct']}%)")
-    print(f"│  ▶ 3° Lugar (10 pts):          {podium['p3_third']} (Probabilidad: {podium['p3_prob_pct']}%)")
-    print(f"│  ▶ Secuencia Exacta:           {' ➔ '.join(podium['exact_podium_sequence'])} (P Conjunta: {podium['combination_probability_pct']}%)")
+    print(
+        "┌──────────────────────────────────────────────────────────────────────────────────┐"
+    )
+    print(
+        "│ 2️⃣  PODIO OFICIAL EXACTO (Domingo) | Modelo: Probabilidad Conjunta MC (35 pts)   │"
+    )
+    print(
+        "├──────────────────────────────────────────────────────────────────────────────────┤"
+    )
+    print(
+        f"│  ▶ 1° Lugar (Ganador, 15 pts): {podium['p1_winner']} (Probabilidad: {podium['p1_prob_pct']}%)"
+    )
+    print(
+        f"│  ▶ 2° Lugar (10 pts):          {podium['p2_second']} (Probabilidad: {podium['p2_prob_pct']}%)"
+    )
+    print(
+        f"│  ▶ 3° Lugar (10 pts):          {podium['p3_third']} (Probabilidad: {podium['p3_prob_pct']}%)"
+    )
+    print(
+        f"│  ▶ Secuencia Exacta:           {' ➔ '.join(podium['exact_podium_sequence'])} (P Conjunta: {podium['combination_probability_pct']}%)"
+    )
     print(f"│  ▶ Justificación:              {podium['rationale']}")
-    print("└──────────────────────────────────────────────────────────────────────────────────┘\n")
+    print(
+        "└──────────────────────────────────────────────────────────────────────────────────┘\n"
+    )
 
-    print("┌──────────────────────────────────────────────────────────────────────────────────┐")
-    print("│ 3️⃣  VUELTA RÁPIDA | Modelo: Ventana Táctica de Pits & Degradación (10 pts)       │")
-    print("├──────────────────────────────────────────────────────────────────────────────────┤")
-    print(f"│  ▶ Piloto Seleccionado: {fl['driver']} (Probabilidad táctica: {fl['probability_pct']}%)")
+    print(
+        "┌──────────────────────────────────────────────────────────────────────────────────┐"
+    )
+    print(
+        "│ 3️⃣  VUELTA RÁPIDA | Modelo: Ventana Táctica de Pits & Degradación (10 pts)       │"
+    )
+    print(
+        "├──────────────────────────────────────────────────────────────────────────────────┤"
+    )
+    print(
+        f"│  ▶ Piloto Seleccionado: {fl['driver']} (Probabilidad táctica: {fl['probability_pct']}%)"
+    )
     print(f"│  ▶ Contendientes:       {fl['top_contenders']}")
     print(f"│  ▶ Justificación:       {fl['rationale']}")
-    print("└──────────────────────────────────────────────────────────────────────────────────┘\n")
+    print(
+        "└──────────────────────────────────────────────────────────────────────────────────┘\n"
+    )
 
-    print("┌──────────────────────────────────────────────────────────────────────────────────┐")
-    print("│ 4️⃣  POSICIÓN EXACTA CHECO PÉREZ | Modelo: Distribución Empírica MC (15 pts)      │")
-    print("├──────────────────────────────────────────────────────────────────────────────────┤")
-    print(f"│  ▶ Posición Pronosticada: {checo['predicted_finish']} (Probabilidad: {checo['probability_pct']}%)")
+    print(
+        "┌──────────────────────────────────────────────────────────────────────────────────┐"
+    )
+    print(
+        "│ 4️⃣  POSICIÓN EXACTA CHECO PÉREZ | Modelo: Distribución Empírica MC (15 pts)      │"
+    )
+    print(
+        "├──────────────────────────────────────────────────────────────────────────────────┤"
+    )
+    print(
+        f"│  ▶ Posición Pronosticada: {checo['predicted_finish']} (Probabilidad: {checo['probability_pct']}%)"
+    )
     print(f"│  ▶ Riesgo DNF Curva 1:    {checo['dnf_risk_pct']}%")
     print("│  ▶ Distribución:")
-    for cand in checo['alternatives']:
+    for cand in checo["alternatives"]:
         print(f"│      - {cand['position']}: {cand['probability_pct']}%")
     print(f"│  ▶ Justificación:         {checo['rationale']}")
-    print("└──────────────────────────────────────────────────────────────────────────────────┘\n")
+    print(
+        "└──────────────────────────────────────────────────────────────────────────────────┘\n"
+    )
 
-    print("┌──────────────────────────────────────────────────────────────────────────────────┐")
-    print("│ 5️⃣  SAFETY CARS FÍSICOS (No VSC) | Modelo: Distribución de Poisson (10 pts)      │")
-    print("├──────────────────────────────────────────────────────────────────────────────────┤")
-    print(f"│  ▶ Fórmula Estocástica:   P(X = k) = (λ^k * e^-λ) / k! | λ_efectiva = {sc['lambda_effective']}")
-    print(f"│  ▶ Conteo Pronosticado:   {sc['predicted_count']} Safety Car(s) físico(s) (Moda: {sc['mode_probability_pct']}%)")
-    print(f"│  ▶ P(Al menos 1 SC):      {sc['p_at_least_one_pct']}% (Embudo de 890m hacia Curva 1)")
+    print(
+        "┌──────────────────────────────────────────────────────────────────────────────────┐"
+    )
+    print(
+        "│ 5️⃣  SAFETY CARS FÍSICOS (No VSC) | Modelo: Distribución de Poisson (10 pts)      │"
+    )
+    print(
+        "├──────────────────────────────────────────────────────────────────────────────────┤"
+    )
+    print(
+        f"│  ▶ Fórmula Estocástica:   P(X = k) = (λ^k * e^-λ) / k! | λ_efectiva = {sc['lambda_effective']}"
+    )
+    print(
+        f"│  ▶ Conteo Pronosticado:   {sc['predicted_count']} Safety Car(s) físico(s) (Moda: {sc['mode_probability_pct']}%)"
+    )
+    print(
+        f"│  ▶ P(Al menos 1 SC):      {sc['p_at_least_one_pct']}% (Embudo de 890m hacia Curva 1)"
+    )
     print(f"│  ▶ Distribución:          {sc['distribution']}")
     print(f"│  ▶ Justificación:         {sc['rationale']}")
-    print("└──────────────────────────────────────────────────────────────────────────────────┘\n")
+    print(
+        "└──────────────────────────────────────────────────────────────────────────────────┘\n"
+    )
 
-    print("====================================================================================")
-    print("🎯 TOTAL PUNTOS POSIBLES: 80 PUNTOS | DTO EXPORTADO: reports/strategy_prediction_dto.json")
-    print("====================================================================================")
+    print(
+        "===================================================================================="
+    )
+    print(
+        "🎯 TOTAL PUNTOS POSIBLES: 80 PUNTOS | DTO EXPORTADO: reports/strategy_prediction_dto.json"
+    )
+    print(
+        "===================================================================================="
+    )
 
 
-def main():
-    predictor = F1RacePredictor(n_simulations=2500, seed=42)
+def main(n_simulations: int = 20000, seed: int = 42):
+    predictor = F1RacePredictor(n_simulations=n_simulations, seed=seed)
     pred_data = predictor.generate_full_prediction()
     generate_and_export_dto(pred_data)
     print_rich_report(pred_data)

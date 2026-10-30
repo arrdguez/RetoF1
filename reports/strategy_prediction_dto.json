@@ -11,87 +11,87 @@
   "strategyPredictionDTO": {
     "point_1_polePosition": {
       "predictedDriver": "ANT",
-      "confidencePct": 15.08,
+      "confidencePct": 15.19,
       "topContenders": {
-        "ANT": 15.08,
-        "HAM": 13.8,
-        "VER": 13.48,
-        "LEC": 12.76,
-        "RUS": 12.04
+        "ANT": 15.19,
+        "VER": 12.37,
+        "HAM": 11.13,
+        "RUS": 10.87,
+        "NOR": 10.77
       },
       "methodology": "Plackett-Luce sobre skill de clasificaci\u00f3n (forma 2026 + equipo + afinidad M\u00e9xico)",
       "awardedPoints": 10
     },
     "point_2_officialPodium": {
       "p1_winner": "ANT",
-      "p2_second": "VER",
-      "p3_third": "HAM",
+      "p2_second": "HAM",
+      "p3_third": "VER",
       "exactSequence": [
         "ANT",
-        "VER",
-        "HAM"
+        "HAM",
+        "VER"
       ],
-      "jointProbabilityPct": 0.68,
+      "jointProbabilityPct": 0.43,
       "methodology": "Terna que maximiza puntos esperados (15/10/10 + 5 parcial) sobre la distribuci\u00f3n Plackett-Luce",
       "awardedPoints": 35
     },
     "point_3_fastestLap": {
       "predictedDriver": "RUS",
-      "confidencePct": 16.32,
+      "confidencePct": 14.94,
       "methodology": "Ritmo de carrera (top-10) \u00d7 afinidad hist\u00f3rica de vuelta r\u00e1pida en M\u00e9xico",
       "awardedPoints": 10
     },
     "point_4_checoPerezPosition": {
       "predictedPosition": "P20",
-      "probabilityPct": 16.48,
+      "probabilityPct": 15.9,
       "alternatives": [
         {
           "position": "P20",
-          "probability_pct": 16.48
-        },
-        {
-          "position": "P19",
-          "probability_pct": 15.6
+          "probability_pct": 15.9
         },
         {
           "position": "DNF",
-          "probability_pct": 14.68
+          "probability_pct": 15.47
+        },
+        {
+          "position": "P19",
+          "probability_pct": 15.36
         },
         {
           "position": "P18",
-          "probability_pct": 11.28
+          "probability_pct": 11.63
         },
         {
           "position": "P21",
-          "probability_pct": 11.04
+          "probability_pct": 10.62
         },
         {
           "position": "P17",
-          "probability_pct": 7.44
+          "probability_pct": 7.7
         }
       ],
-      "dnfRiskPct": 14.68,
+      "dnfRiskPct": 15.47,
       "methodology": "Moda de la distribuci\u00f3n emp\u00edrica P1..P22 \u222a DNF (Cadillac, 0 pts en 2026)",
       "awardedPoints": 15
     },
     "point_5_safetyCarsPhysical": {
       "predictedCount": 0,
-      "modeProbabilityPct": 47.24,
-      "pAtLeastOnePct": 52.76,
+      "modeProbabilityPct": 48.23,
+      "pAtLeastOnePct": 51.77,
       "distribution": {
-        "0 Safety Cars": "47.24%",
-        "1 Safety Car": "35.43%",
-        "2 Safety Cars": "13.29%",
-        "3 Safety Cars": "3.32%"
+        "0 Safety Cars": "48.23%",
+        "1 Safety Car": "32.15%",
+        "2 Safety Cars": "13.4%",
+        "3 Safety Cars": "4.47%"
       },
       "lambdaEffective": 0.75,
       "lambdaBase": 0.75,
-      "methodology": "Poisson emp\u00edrico (\u03bb=0.75 de 4 ediciones 2021-2024)",
+      "methodology": "Poisson-Gamma Bayesiano (predictiva Binomial Negativa)",
       "awardedPoints": 10
     }
   },
   "summaryScore": {
     "maximumChallengePoints": 80,
-    "projectedAccuracyScore": "High (Canonical Single Source of Truth)"
+    "projectedAccuracyScore": "No medido (backtest pendiente)"
   }
 }

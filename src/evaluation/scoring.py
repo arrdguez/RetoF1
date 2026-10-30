@@ -1,6 +1,17 @@
 from typing import Dict, Any, List
 from config.settings import SCORING_CONFIG
 
+REQUIRED_FIELDS = [
+    "pole",
+    "p1",
+    "p2",
+    "p3",
+    "fastest_lap",
+    "checo_position",
+    "safety_cars",
+]
+
+
 class ChallengeScorer:
     """
     Computes points earned in the 'Desafío Tech: Estratega de F1' challenge
@@ -10,10 +21,38 @@ class ChallengeScorer:
     def __init__(self, scoring_config=SCORING_CONFIG):
         self.cfg = scoring_config
 
+    def _validate(self, data: Dict[str, Any], label: str) -> List[str]:
+        """Rechaza entradas incompletas, inválidas o con podio repetido.
+
+        Un campo ausente NO es un acierto: debe invalidarse antes de puntuar.
+        """
+        errors: List[str] = []
+        for f in REQUIRED_FIELDS:
+            v = data.get(f)
+            if v is None or (isinstance(v, str) and v.strip() == ""):
+                errors.append(f"{label}.{f}: valor ausente")
+
+        p1 = str(data.get("p1", "")).strip().upper()
+        p2 = str(data.get("p2", "")).strip().upper()
+        p3 = str(data.get("p3", "")).strip().upper()
+        if p1 and p2 and p3 and len({p1, p2, p3}) < 3:
+            errors.append(f"{label}: podio con pilotos repetidos ({p1},{p2},{p3})")
+
+        try:
+            sc = float(data.get("safety_cars"))
+            if not sc.is_integer() or sc < 0:
+                errors.append(
+                    f"{label}.safety_cars: debe ser entero no negativo (recibido {data.get('safety_cars')!r})"
+                )
+        except (TypeError, ValueError):
+            errors.append(
+                f"{label}.safety_cars: inválido ({data.get('safety_cars')!r})"
+            )
+
+        return errors
+
     def score_prediction(
-        self,
-        predicted: Dict[str, Any],
-        actual: Dict[str, Any]
+        self, predicted: Dict[str, Any], actual: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
         predicted format:
@@ -27,6 +66,19 @@ class ChallengeScorer:
             "safety_cars": 1
         }
         """
+        errors = self._validate(predicted, "predicción") + self._validate(
+            actual, "resultado"
+        )
+        if errors:
+            return {
+                "total_score": 0,
+                "max_possible": self.cfg.max_possible_points,
+                "accuracy_pct": 0.0,
+                "valid": False,
+                "errors": errors,
+                "breakdown": {},
+            }
+
         breakdown = {}
         total_points = 0
 
@@ -38,7 +90,7 @@ class ChallengeScorer:
             "actual": actual.get("pole"),
             "matched": pole_match,
             "points": pts_pole,
-            "max": self.cfg.pole_exact
+            "max": self.cfg.pole_exact,
         }
         total_points += pts_pole
 
@@ -52,24 +104,54 @@ class ChallengeScorer:
         pred_p2 = predicted.get("p2", "").upper()
         pred_p3 = predicted.get("p3", "").upper()
 
-        pts_p1 = self.cfg.winner_exact if pred_p1 == act_p1 else (self.cfg.podium_other_position if pred_p1 in actual_podium else 0)
-        pts_p2 = self.cfg.second_exact if pred_p2 == act_p2 else (self.cfg.podium_other_position if pred_p2 in actual_podium else 0)
-        pts_p3 = self.cfg.third_exact if pred_p3 == act_p3 else (self.cfg.podium_other_position if pred_p3 in actual_podium else 0)
+        pts_p1 = (
+            self.cfg.winner_exact
+            if pred_p1 == act_p1
+            else (self.cfg.podium_other_position if pred_p1 in actual_podium else 0)
+        )
+        pts_p2 = (
+            self.cfg.second_exact
+            if pred_p2 == act_p2
+            else (self.cfg.podium_other_position if pred_p2 in actual_podium else 0)
+        )
+        pts_p3 = (
+            self.cfg.third_exact
+            if pred_p3 == act_p3
+            else (self.cfg.podium_other_position if pred_p3 in actual_podium else 0)
+        )
 
-        breakdown["podio_1st"] = {"predicted": pred_p1, "actual": act_p1, "points": pts_p1, "max": self.cfg.winner_exact}
-        breakdown["podio_2nd"] = {"predicted": pred_p2, "actual": act_p2, "points": pts_p2, "max": self.cfg.second_exact}
-        breakdown["podio_3rd"] = {"predicted": pred_p3, "actual": act_p3, "points": pts_p3, "max": self.cfg.third_exact}
-        total_points += (pts_p1 + pts_p2 + pts_p3)
+        breakdown["podio_1st"] = {
+            "predicted": pred_p1,
+            "actual": act_p1,
+            "points": pts_p1,
+            "max": self.cfg.winner_exact,
+        }
+        breakdown["podio_2nd"] = {
+            "predicted": pred_p2,
+            "actual": act_p2,
+            "points": pts_p2,
+            "max": self.cfg.second_exact,
+        }
+        breakdown["podio_3rd"] = {
+            "predicted": pred_p3,
+            "actual": act_p3,
+            "points": pts_p3,
+            "max": self.cfg.third_exact,
+        }
+        total_points += pts_p1 + pts_p2 + pts_p3
 
         # 3. Vuelta Rápida (10 pts)
-        fl_match = predicted.get("fastest_lap", "").upper() == actual.get("fastest_lap", "").upper()
+        fl_match = (
+            predicted.get("fastest_lap", "").upper()
+            == actual.get("fastest_lap", "").upper()
+        )
         pts_fl = self.cfg.fastest_lap_exact if fl_match else 0
         breakdown["vuelta_rapida"] = {
             "predicted": predicted.get("fastest_lap"),
             "actual": actual.get("fastest_lap"),
             "matched": fl_match,
             "points": pts_fl,
-            "max": self.cfg.fastest_lap_exact
+            "max": self.cfg.fastest_lap_exact,
         }
         total_points += pts_fl
 
@@ -78,32 +160,39 @@ class ChallengeScorer:
             s = str(val).strip().upper()
             return s if s.startswith("P") or s == "DNF" else f"P{s}"
 
-        checo_match = norm_pos(predicted.get("checo_position", "")) == norm_pos(actual.get("checo_position", ""))
+        checo_match = norm_pos(predicted.get("checo_position", "")) == norm_pos(
+            actual.get("checo_position", "")
+        )
         pts_checo = self.cfg.checo_position_exact if checo_match else 0
         breakdown["checo_position"] = {
             "predicted": predicted.get("checo_position"),
             "actual": actual.get("checo_position"),
             "matched": checo_match,
             "points": pts_checo,
-            "max": self.cfg.checo_position_exact
+            "max": self.cfg.checo_position_exact,
         }
         total_points += pts_checo
 
         # 5. Safety Cars físicos (10 pts)
-        sc_match = int(predicted.get("safety_cars", -1)) == int(actual.get("safety_cars", -2))
+        sc_match = int(predicted.get("safety_cars", -1)) == int(
+            actual.get("safety_cars", -2)
+        )
         pts_sc = self.cfg.safety_cars_exact if sc_match else 0
         breakdown["safety_cars"] = {
             "predicted": predicted.get("safety_cars"),
             "actual": actual.get("safety_cars"),
             "matched": sc_match,
             "points": pts_sc,
-            "max": self.cfg.safety_cars_exact
+            "max": self.cfg.safety_cars_exact,
         }
         total_points += pts_sc
 
         return {
             "total_score": total_points,
             "max_possible": self.cfg.max_possible_points,
-            "accuracy_pct": round((total_points / self.cfg.max_possible_points) * 100, 1),
-            "breakdown": breakdown
+            "accuracy_pct": round(
+                (total_points / self.cfg.max_possible_points) * 100, 1
+            ),
+            "valid": True,
+            "breakdown": breakdown,
         }
