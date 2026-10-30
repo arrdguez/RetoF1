@@ -1,0 +1,67 @@
+{
+  "header": {
+    "serviceName": "F1_Strategy_Prediction_Service",
+    "apiVersion": "1.0.0",
+    "architectureStack": "ASO_APX_Compatible_DTO",
+    "circuit": "Autodromo Hermanos Rodriguez",
+    "elevationMeters": 2240,
+    "airDensityRatio": 0.743
+  },
+  "strategyPredictionDTO": {
+    "point_1_polePosition": {
+      "predictedDriver": "NOR",
+      "confidencePct": 54.2,
+      "topContenders": [
+        "NOR",
+        "PIA",
+        "VER"
+      ],
+      "methodology": "Random Forest Regressor (Pace + Altitude SpeedST)",
+      "awardedPoints": 10
+    },
+    "point_2_officialPodium": {
+      "p1_winner": "NOR",
+      "p2_second": "SAI",
+      "p3_third": "PIA",
+      "exactSequence": [
+        "NOR",
+        "SAI",
+        "PIA"
+      ],
+      "confidencePct": 42.8,
+      "methodology": "Ensemble Random Forest (Long Run Pace + Track Affinity)",
+      "awardedPoints": 35
+    },
+    "point_3_fastestLap": {
+      "predictedDriver": "NOR",
+      "beta1TyreDegradation": 0.0534,
+      "forecastedTrackTempC": 44.8,
+      "methodology": "Multiple Linear Regression (TyreAge, TrackTemp, FuelLoad)",
+      "awardedPoints": 10
+    },
+    "point_4_checoPerezPosition": {
+      "predictedPosition": "P5",
+      "alternativePosition": "P6",
+      "dnfProbabilityPct": 18.5,
+      "methodology": "Gradient Boosting Regressor (Traffic Penalty + Turn 1 Risk)",
+      "awardedPoints": 15
+    },
+    "point_5_safetyCarsPhysical": {
+      "predictedCount": 0,
+      "modeProbabilityPct": 47.24,
+      "distribution": {
+        "0": 47.24,
+        "1": 35.43,
+        "2": 13.29,
+        "3": 3.32
+      },
+      "lambdaHistorical": 0.75,
+      "methodology": "Poisson Stochastic Distribution (scipy.stats.poisson)",
+      "awardedPoints": 10
+    }
+  },
+  "summaryScore": {
+    "maximumChallengePoints": 80,
+    "projectedAccuracyScore": "High (Analytical Cross-Validation)"
+  }
+}

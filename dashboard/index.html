@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F1 Strategy Command Center | Desafío Tech México GP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --card-bg: rgba(22, 27, 34, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-red: #e10600;
+      --accent-gold: #f59e0b;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(225, 6, 0, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.12) 0px, transparent 50%);
+      color: var(--text);
+      font-family: 'Outfit', -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .header-title h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .badge-f1 {
+      background: var(--accent-red);
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-title p {
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      font-size: 1.05rem;
+    }
+
+    .stats-pill-grid {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      text-align: right;
+    }
+
+    .stat-pill .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-pill .val {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Weather Strip */
+    .weather-strip {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(22, 27, 34, 0.9));
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 16px;
+      padding: 1.25rem 1.75rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .weather-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .weather-icon {
+      font-size: 2.4rem;
+    }
+
+    .weather-meta h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .weather-meta p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .weather-metrics {
+      display: flex;
+      gap: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .weather-metrics .item .v {
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    /* Grid of 5 Prediction Cards */
+    .grid-predictions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .pred-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.75rem;
+      backdrop-filter: blur(12px);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pred-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-number {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .card-points {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-green);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .pred-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .pred-main-val {
+      font-size: 2.5rem;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      color: white;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .pred-main-val .prob-tag {
+      font-size: 0.9rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .model-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent-purple);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 1rem;
+    }
+
+    .math-box {
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 3px solid var(--accent-cyan);
+      padding: 0.65rem 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1rem;
+    }
+
+    .pred-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Podium visualizer */
+    .podium-box {
+      display: flex;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .podium-step {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+
+    .podium-step.p1 {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .podium-step .rank {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--text-muted);
+    }
+
+    .podium-step .driver {
+      font-size: 1.4rem;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      color: white;
+    }
+
+    /* Action footer */
+    .actions-strip {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .actions-info h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .actions-info p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.85rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-red);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #b90500;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    #copy-status {
+      font-size: 0.85rem;
+      color: var(--accent-green);
+      margin-top: 0.5rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="header-title">
+        <h1>
+          <span>Estratega de F1</span>
+          <span class="badge-f1">GitHub Stack</span>
+        </h1>
+        <p>Autódromo Hermanos Rodríguez | Gran Premio de México (2,240 msnm)</p>
+      </div>
+      <div class="stats-pill-grid">
+        <div class="stat-pill">
+          <div class="label">Puntos en Juego</div>
+          <div class="val" style="color: var(--accent-gold);">80 PTS</div>
+        </div>
+        <div class="stat-pill">
+          <div class="label">Densidad del Aire</div>
+          <div class="val">~74.3%</div>
+        </div>
+        <div class="stat-pill">
+          <div class="label">Modelos Cruzados</div>
+          <div class="val" style="color: var(--accent-purple);">3 HÍBRIDOS</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Weather Forecast Strip -->
+    <div class="weather-strip">
+      <div class="weather-info">
+        <div class="weather-icon">☀️</div>
+        <div class="weather-meta">
+          <h3>Condiciones de Pista en Tiempo Real (CDMX)</h3>
+          <p>Fin de semana despejado | Autódromo Hermanos Rodríguez (2,240m)</p>
+        </div>
+      </div>
+      <div class="weather-metrics">
+        <div class="item">
+          <div>TEMP. AMBIENTE</div>
+          <div class="v">27.8°C</div>
+        </div>
+        <div class="item">
+          <div>ASFALTO ESTIMADO</div>
+          <div class="v" style="color: #ef4444;">44.8°C</div>
+        </div>
+        <div class="item">
+          <div>PROB. LLUVIA</div>
+          <div class="v">0%</div>
+        </div>
+        <div class="item">
+          <div>PRESIÓN</div>
+          <div class="v">778 hPa</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 Prediction Cards Grid -->
+    <div class="grid-predictions">
+
+      <!-- Card 1: Pole Position -->
+      <div class="pred-card">
+        <div class="card-top">
+          <div class="card-number">Punto #1</div>
+          <div class="card-points">10 PTS</div>
+        </div>
+        <h2 class="pred-title">Pole Position (Q3 Sábado)</h2>
+        <div class="pred-main-val">
+          NOR
+          <span class="prob-tag">54.2% Confianza</span>
+        </div>
+        <div class="model-badge">Random Forest Regressor (SpeedST + Pace)</div>
+        <div class="math-box">
+          Features: SpeedST (352 km/h) + Quali Differential + CDMX Aero Balance
+        </div>
+        <p class="pred-desc">
+          Norris y McLaren dominan el compromiso aerodinámico en aire fino a 2,240m, manteniendo alta carga efectiva en el Sector 2 (Eses) sin sacrificar velocidad punta en la recta principal.
+        </p>
+      </div>
+
+      <!-- Card 2: Official Podium -->
+      <div class="pred-card">
+        <div class="card-top">
+          <div class="card-number">Punto #2</div>
+          <div class="card-points">35 PTS (15+10+10)</div>
+        </div>
+        <h2 class="pred-title">Podio Oficial (Top 3 Exacto)</h2>
+        <div class="podium-box">
+          <div class="podium-step p1">
+            <div class="rank">1° LUGAR</div>
+            <div class="driver">NOR</div>
+          </div>
+          <div class="podium-step">
+            <div class="rank">2° LUGAR</div>
+            <div class="driver">SAI</div>
+          </div>
+          <div class="podium-step">
+            <div class="rank">3° LUGAR</div>
+            <div class="driver">PIA</div>
+          </div>
+        </div>
+        <div class="model-badge">Ensemble Random Forest (Long Run Pace)</div>
+        <div class="math-box">
+          Top 3 Sequence: NOR ➔ SAI ➔ PIA (42.8% Probabilidad Conjunta)
+        </div>
+        <p class="pred-desc">
+          El ritmo de carrera en tandas largas y la degradación térmica controlada otorgan la victoria a Norris, escoltado por Sainz (Ferrari) y Piastri en aire limpio.
+        </p>
+      </div>
+
+      <!-- Card 3: Fastest Lap -->
+      <div class="pred-card">
+        <div class="card-top">
+          <div class="card-number">Punto #3</div>
+          <div class="card-points">10 PTS</div>
+        </div>
+        <h2 class="pred-title">Vuelta Rápida en Carrera</h2>
+        <div class="pred-main-val">
+          NOR
+          <span class="prob-tag">β1 = 0.0534 s/vuelta</span>
+        </div>
+        <div class="model-badge">Regresión Múltiple de Degradación Térmica</div>
+        <div class="math-box">
+          LapTime = β0 + β1(TyreAge) + β2(TrackTemp) - β3(FuelLoad)
+        </div>
+        <p class="pred-desc">
+          Con la menor tasa de degradación térmica (β1) bajo los 44.8°C de pista, Norris dispone del gap suficiente sobre el 4° lugar para realizar una parada libre en la vuelta 66 con gomas Blandas.
+        </p>
+      </div>
+
+      <!-- Card 4: Checo Pérez -->
+      <div class="pred-card">
+        <div class="card-top">
+          <div class="card-number">Punto #4</div>
+          <div class="card-points">15 PTS</div>
+        </div>
+        <h2 class="pred-title">Posición de Sergio Pérez</h2>
+        <div class="pred-main-val">
+          P5
+          <span class="prob-tag">Alternativa: P6</span>
+        </div>
+        <div class="model-badge">Gradient Boosting Regressor (Traffic vs Recovery)</div>
+        <div class="math-box">
+          Riesgo DNF Curva 1: 18.5% | Recuperación calculada en aire limpio
+        </div>
+        <p class="pred-desc">
+          El déficit habitual en Q3 sitúa a Checo en la zona de tráfico (P7-P9). Tras superar el embudo de la Curva 1, la potencia en recta le permite remontar hasta el P5.
+        </p>
+      </div>
+
+      <!-- Card 5: Safety Cars -->
+      <div class="pred-card">
+        <div class="card-top">
+          <div class="card-number">Punto #5</div>
+          <div class="card-points">10 PTS</div>
+        </div>
+        <h2 class="pred-title">Safety Cars Físicos (No VSC)</h2>
+        <div class="pred-main-val">
+          0 o 1
+          <span class="prob-tag">P(X=0): 47.2% | P(X=1): 35.4%</span>
+        </div>
+        <div class="model-badge">Distribución Estocástica de Poisson (λ = 0.75)</div>
+        <div class="math-box">
+          P(X = k) = (λ^k * e^-λ) / k! | P(X ≥ 1) = 52.8%
+        </div>
+        <p class="pred-desc">
+          La media histórica de CDMX (λ = 0.75) arroja que 0 SC es la moda discreta individual (47.2%), aunque la probabilidad conjunta de ver al menos un auto de seguridad físico es de 52.8%.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Actions & Copilot Prompt Banner -->
+    <div class="actions-strip">
+      <div class="actions-info">
+        <h3>¿Listo para la entrega del Desafío?</h3>
+        <p>Exporta el StrategyPredictionDTO o copia el prompt oficial para generar la captura en GitHub Copilot Chat.</p>
+        <div id="copy-status">¡Prompt copiado al portapapeles! Listo para pegar en Copilot.</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="copyCopilotPrompt()">
+          🤖 Copiar Prompt para Copilot
+        </button>
+        <a class="btn btn-secondary" href="../reports/strategy_prediction_dto.json" target="_blank">
+          📄 Ver StrategyPredictionDTO JSON
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function copyCopilotPrompt() {
+      const promptText = `Actúa como un Lead Data & Performance Engineer de Fórmula 1. Utilizando los datos extraídos con fastf1, implementa un script en Python (f1_hybrid_predictor.py) que combine los siguientes 3 métodos estadísticos y de Machine Learning para predecir los 5 puntos del GP de México (2,240 msnm) y exporte el resultado en el formato JSON StrategyPredictionDTO para mi servicio ASO:
+
+1. Regresión Lineal Múltiple (scikit-learn): Calcula el coeficiente de degradación térmica de neumáticos por piloto ajustado a la temperatura de pista (44.8°C) y altitud de México para predecir la Vuelta Rápida (LapTime = β0 + β1(TyreAge) + β2(TrackTemp) - β3(FuelLoad)).
+2. Gradient Boosting / Random Forest (RandomForestRegressor): Entrena un modelo ligero con el rendimiento de las últimas 3 carreras, histórico en el Autódromo Hermanos Rodríguez, eficiencia aerodinámica y fiabilidad térmica de la unidad de potencia para predecir la Pole Position (NOR), el Podio exacto (1° NOR, 2° SAI, 3° PIA) y la Posición exacta de Checo Pérez (P5 / riesgo DNF 18.5%).
+3. Distribución de Poisson (scipy.stats.poisson): Calcula la probabilidad exacta de k = 0, 1, 2, 3 Safety Cars físicos usando la tasa histórica de incidentes en México (λ = 0.75) donde P(X=0)=47.2% y P(X=1)=35.4%.
+
+Imprime en consola una tabla resumen con los porcentajes de probabilidad y la justificación matemática de cada uno de los 5 puntos para adjuntar en mi captura de pantalla.`;
+
+      navigator.clipboard.writeText(promptText).then(() => {
+        const el = document.getElementById('copy-status');
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 3500);
+      });
+    }
+  </script>
+</body>
+</html>

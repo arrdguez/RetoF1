@@ -143,6 +143,7 @@ def main():
     parser.add_argument("--physics", action="store_true", help="Mostrar análisis de física y degradación por altitud")
     parser.add_argument("--weather", action="store_true", help="Mostrar pronóstico del tiempo real en CDMX")
     parser.add_argument("--fetch-real", action="store_true", help="Descargar datos reales en vivo de APIs")
+    parser.add_argument("--hybrid", action="store_true", help="Ejecutar predictor híbrido (Poisson, Regresión Múltiple, Random Forest)")
     parser.add_argument("--prompt", action="store_true", help="Mostrar el prompt para GitHub Copilot")
     parser.add_argument("--test-score", action="store_true", help="Demostración de cálculo de puntaje")
     parser.add_argument("--sims", type=int, default=2500, help="Número de iteraciones de Monte Carlo")
@@ -158,8 +159,8 @@ def main():
         return
 
     # Default to --predict if no flags provided
-    if not any([args.predict, args.physics, args.weather, args.prompt, args.test_score, args.all]):
-        args.predict = True
+    if not any([args.predict, args.physics, args.weather, args.hybrid, args.prompt, args.test_score, args.all]):
+        args.hybrid = True
 
     if args.weather or args.all:
         run_weather()
@@ -167,7 +168,11 @@ def main():
     if args.physics or args.all:
         run_physics()
 
-    if args.predict or args.all:
+    if args.hybrid or args.all:
+        import f1_hybrid_predictor
+        f1_hybrid_predictor.main()
+
+    if args.predict:
         run_predictions(args.sims)
 
     if args.test_score or args.all:
