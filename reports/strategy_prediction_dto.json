@@ -11,15 +11,15 @@
   "strategyPredictionDTO": {
     "point_1_polePosition": {
       "predictedDriver": "ANT",
-      "confidencePct": 15.19,
+      "confidencePct": 16.35,
       "topContenders": {
-        "ANT": 15.19,
-        "VER": 12.37,
-        "HAM": 11.13,
-        "RUS": 10.87,
-        "NOR": 10.77
+        "ANT": 16.35,
+        "HAM": 13.41,
+        "VER": 12.19,
+        "LEC": 10.21,
+        "NOR": 8.39
       },
-      "methodology": "Plackett-Luce sobre skill de clasificaci\u00f3n (forma 2026 + equipo + afinidad M\u00e9xico)",
+      "methodology": "Plackett-Luce sobre skill (rating Bradley-Terry 2026 + equipo + momento + afinidad M\u00e9xico)",
       "awardedPoints": 10
     },
     "point_2_officialPodium": {
@@ -31,46 +31,46 @@
         "HAM",
         "VER"
       ],
-      "jointProbabilityPct": 0.43,
+      "jointProbabilityPct": 0.53,
       "methodology": "Terna que maximiza puntos esperados (15/10/10 + 5 parcial) sobre la distribuci\u00f3n Plackett-Luce",
       "awardedPoints": 35
     },
     "point_3_fastestLap": {
-      "predictedDriver": "RUS",
-      "confidencePct": 14.94,
-      "methodology": "Ritmo de carrera (top-10) \u00d7 afinidad hist\u00f3rica de vuelta r\u00e1pida en M\u00e9xico",
+      "predictedDriver": "HAM",
+      "confidencePct": 15.42,
+      "methodology": "Rating Bradley-Terry \u00d7 afinidad hist\u00f3rica de vuelta r\u00e1pida en M\u00e9xico",
       "awardedPoints": 10
     },
     "point_4_checoPerezPosition": {
-      "predictedPosition": "P20",
-      "probabilityPct": 15.9,
+      "predictedPosition": "DNF",
+      "probabilityPct": 15.89,
       "alternatives": [
         {
-          "position": "P20",
-          "probability_pct": 15.9
-        },
-        {
           "position": "DNF",
-          "probability_pct": 15.47
+          "probability_pct": 15.89
         },
         {
           "position": "P19",
-          "probability_pct": 15.36
+          "probability_pct": 13.26
+        },
+        {
+          "position": "P20",
+          "probability_pct": 12.3
         },
         {
           "position": "P18",
-          "probability_pct": 11.63
-        },
-        {
-          "position": "P21",
-          "probability_pct": 10.62
+          "probability_pct": 11.23
         },
         {
           "position": "P17",
-          "probability_pct": 7.7
+          "probability_pct": 8.7
+        },
+        {
+          "position": "P21",
+          "probability_pct": 7.74
         }
       ],
-      "dnfRiskPct": 15.47,
+      "dnfRiskPct": 15.89,
       "methodology": "Moda de la distribuci\u00f3n emp\u00edrica P1..P22 \u222a DNF (Cadillac, 0 pts en 2026)",
       "awardedPoints": 15
     },

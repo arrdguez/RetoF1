@@ -103,14 +103,16 @@ DRIVER_NAMES: Dict[str, str] = {
 }
 
 # Pesos del modelo (hiperparámetros documentados; no calibrados a un resultado).
-# - Forma 2026 (puntos) ~35%: ritmo general de la temporada.
-# - Victorias 2026 ~20%: señal de dominancia (predecir "quién gana" necesita
-#   las victorias, no solo la consistencia de puntos).
-# - Equipo ~30%: en F1 el coche explica gran parte del rendimiento.
+# - Rating Bradley-Terry ~45%: ritmo del piloto estimado por máxima verosimilitud
+#   a partir de los 18 resultados de 2026 (comparaciones "quién venció a quién").
+#   Es el modelo canónico de rankings por pares; sustituye a log(puntos) a mano.
+# - Equipo ~25%: en F1 el coche explica gran parte del rendimiento.
+# - Momento (últimas 4 carreras) ~15%: forma reciente con ponderación temporal
+#   decreciente (R18 > R17 > R16 > R15). Capta subidas/bajadas de forma tardía.
 # - Afinidad México ~15%: ajuste modesto por dominio de circuito.
-W_FORM = 0.35
-W_WINS = 0.20
-W_TEAM = 0.30
+W_BT = 0.45
+W_TEAM = 0.25
+W_MOM = 0.15
 W_MX = 0.15
 
 # Ruido de Monte Carlo (multiplicativo, log-normal) para cuantificar incertidumbre.
@@ -243,16 +245,137 @@ class StatisticalF1Predictor:
 
         return drivers
 
+    # -- Ratings (Bradley-Terry MLE) y momento reciente --------------------
+
+    def _load_race_results(self) -> List[Dict[str, Any]]:
+        """Resultados de las 18 rondas 2026 (orden de llegada + DNF)."""
+        rounds_dir = RAW_DATA_DIR / "2026" / "rounds"
+        races = []
+        files = sorted(
+            rounds_dir.glob("R*_results.json"),
+            key=lambda p: int(p.stem.split("_")[0][1:]),
+        )
+        for f in files:
+            data = json.loads(f.read_text(encoding="utf-8"))
+            rs = data["MRData"]["RaceTable"]["Races"]
+            if not rs or not rs[0].get("Results"):
+                continue
+            r = rs[0]
+            classified = []
+            dnf = []
+            for res in r["Results"]:
+                code = res["Driver"]["code"]
+                pos = res.get("positionText", "")
+                if pos.isdigit():
+                    classified.append(code)
+                else:
+                    dnf.append(code)
+            races.append(
+                {"round": int(r["round"]), "classified": classified, "dnf": dnf}
+            )
+        return races
+
+    def _compute_bt_ratings(self) -> Dict[str, float]:
+        """
+        Rating Bradley-Terry por máxima verosimilitud (algoritmo de Zermelo /
+        escalamiento iterativo) sobre las comparaciones "i terminó delante de j"
+        en las 18 rondas de 2026. Devuelve log(theta) centrado en 0.
+
+        Mientras que log(puntos) es un proxy, esto es el estimador de máxima
+        verosimilitud del modelo de comparación por pares: estadísticamente el
+        rating correcto para rankings.
+        """
+        codes = [d["code"] for d in self.drivers]
+        races = self._load_race_results()
+        # Universo de pilotos: los de la parrilla 2026 más cualquier suplente
+        # que haya corrido alguna ronda (p. ej. Tsunoda R12-R14). Se incluyen
+        # en las comparaciones porque son informativas, pero solo se devuelven
+        # los 22 titulares.
+        all_codes = set(codes)
+        for race in races:
+            all_codes.update(race["classified"])
+            all_codes.update(race["dnf"])
+        all_codes = sorted(all_codes)
+
+        wins = {c: 0.0 for c in all_codes}
+        pairs = {c: {o: 0 for o in all_codes} for c in all_codes}
+        for race in races:
+            finishers = race["classified"]
+            for i in range(len(finishers)):
+                for j in range(i + 1, len(finishers)):
+                    a, b = finishers[i], finishers[j]
+                    if a not in wins or b not in wins:
+                        continue
+                    wins[a] += 1.0
+                    pairs[a][b] += 1
+            for a in race["dnf"]:
+                if a not in wins:
+                    continue
+                for b in finishers:
+                    if b not in wins:
+                        continue
+                    wins[b] += 1.0
+                    pairs[b][a] += 1
+
+        theta = {c: 1.0 for c in all_codes}
+        for _ in range(500):
+            new = {}
+            for i in all_codes:
+                denom = 0.0
+                for j in all_codes:
+                    if j == i:
+                        continue
+                    n = pairs[i][j] + pairs[j][i]
+                    if n > 0:
+                        denom += n / (theta[i] + theta[j])
+                new[i] = (
+                    (wins[i] + 1.0) / (denom + 1e-6) if denom > 0 else wins[i] + 1.0
+                )
+            mean = sum(new.values()) / len(all_codes)
+            theta = {c: v / mean for c, v in new.items()}
+        log_theta = {c: math.log(max(theta[c], 1e-6)) for c in all_codes}
+        center = sum(log_theta[c] for c in codes) / len(codes)
+        return {c: log_theta[c] - center for c in codes}
+
+    def _compute_momentum(self) -> Dict[str, float]:
+        """
+        Forma reciente: puntos de las últimas 4 carreras (R15-R18) con
+        ponderación temporal decreciente R18=0.4, R17=0.3, R16=0.2, R15=0.1.
+        Se devuelve log(1 + puntuación ponderada), centrada.
+        """
+        weights = {15: 0.1, 16: 0.2, 17: 0.3, 18: 0.4}
+        codes = [d["code"] for d in self.drivers]
+        score = {c: 0.0 for c in codes}
+        for race in self._load_race_results():
+            r = race["round"]
+            if r not in weights:
+                continue
+            data = json.loads(
+                (RAW_DATA_DIR / "2026" / "rounds" / f"R{r}_results.json").read_text()
+            )
+            for res in data["MRData"]["RaceTable"]["Races"][0]["Results"]:
+                code = res["Driver"]["code"]
+                pts = float(res.get("points", 0) or 0)
+                score[code] = score.get(code, 0.0) + weights[r] * pts
+        mom = {c: math.log(1.0 + score[c]) for c in codes}
+        center = sum(mom.values()) / len(codes)
+        return {c: mom[c] - center for c in codes}
+
     def _skills(self) -> Tuple[Dict[str, float], Dict[str, float]]:
         """Skill quali/carrera por piloto (log de theta de Plackett-Luce)."""
+        bt = self._compute_bt_ratings()
+        mom = self._compute_momentum()
         sq: Dict[str, float] = {}
         sr: Dict[str, float] = {}
         for d in self.drivers:
-            form = math.log(1.0 + d["points_2026"])
-            wins_log = math.log(1.0 + d["wins_2026"])
             team_log = math.log(1.0 + d["team_points_2026"])
             mx_aff = d["mexico_affinity"]
-            s = W_FORM * form + W_WINS * wins_log + W_TEAM * team_log + W_MX * mx_aff
+            s = (
+                W_BT * bt[d["code"]]
+                + W_TEAM * team_log
+                + W_MOM * mom[d["code"]]
+                + W_MX * mx_aff
+            )
             sq[d["code"]] = s
             sr[d["code"]] = s
         return sq, sr
@@ -512,7 +635,7 @@ class StatisticalF1Predictor:
                     "probability_pct": pole_pct,
                     "top_contenders": dict(list(sim["pole_probabilities"].items())[:5]),
                     "challenge_points": SCORING_CONFIG.pole_exact,
-                    "methodology": "Plackett-Luce sobre skill de clasificación (forma 2026 + equipo + afinidad México)",
+                    "methodology": "Plackett-Luce sobre skill (rating Bradley-Terry 2026 + equipo + momento + afinidad México)",
                     "rationale": (
                         f"{DRIVER_NAMES[pole_driver]} ({pole_driver}) maximiza la combinación de ritmo "
                         f"2026 y afinidad con el trazado; probabilidad {pole_pct}% de llevarse la pole en Q3."
@@ -546,7 +669,7 @@ class StatisticalF1Predictor:
                         list(sim["fastest_lap_probabilities"].items())[:5]
                     ),
                     "challenge_points": SCORING_CONFIG.fastest_lap_exact,
-                    "methodology": "Ritmo de carrera (top-10) × afinidad histórica de vuelta rápida en México",
+                    "methodology": "Rating Bradley-Terry × afinidad histórica de vuelta rápida en México",
                     "rationale": (
                         f"{DRIVER_NAMES[fl_driver]} ({fl_driver}) combina ritmo de carrera con historial "
                         f"de vuelta rápida en México (probabilidad {fl_pct}%)."
@@ -563,8 +686,9 @@ class StatisticalF1Predictor:
                     "challenge_points": SCORING_CONFIG.checo_position_exact,
                     "methodology": "Moda de la distribución empírica P1..P22 ∪ DNF (Cadillac, 0 pts en 2026)",
                     "rationale": (
-                        f"Cadillac acumula 0 puntos en 2026 (11º de 11 constructores): la moda de la "
-                        f"distribución ubica a Checo en {checo_mode_pos} ({checo_mode_pct}%), con {dnf_pct}% de DNF."
+                        f"Cadillac acumula 0 puntos en 2026 (11º de 11 constructores). La moda de la "
+                        f"distribución es {checo_mode_pos} ({checo_mode_pct}%); si termina, su zona más "
+                        f"probable es P17-P21, y el riesgo de abandono es del {dnf_pct}%."
                     ),
                 },
                 "5_safety_cars_fisicos": sc,

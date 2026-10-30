@@ -33,16 +33,16 @@
     <h2>1 · Pole Position (Q3)</h2>
     <div class="answer">ANT</div>
     <div class="sub">Andrea Kimi Antonelli · Mercedes</div>
-    <div class="prob">15.2 %</div>
+    <div class="prob">16.4 %</div>
     <span class="pts">10 pts</span>
     <span class="method">Método: Plackett-Luce + Monte Carlo</span>
     <table>
       <tr><th>Piloto</th><th>Prob.</th></tr>
-      <tr><td>ANT</td><td>15.2 %</td></tr>
-      <tr><td>VER</td><td>12.4 %</td></tr>
-      <tr><td>HAM</td><td>11.1 %</td></tr>
-      <tr><td>RUS</td><td>10.9 %</td></tr>
-      <tr><td>NOR</td><td>10.8 %</td></tr>
+      <tr><td>ANT</td><td>16.4 %</td></tr>
+      <tr><td>HAM</td><td>13.4 %</td></tr>
+      <tr><td>VER</td><td>12.2 %</td></tr>
+      <tr><td>LEC</td><td>10.2 %</td></tr>
+      <tr><td>NOR</td><td>8.4 %</td></tr>
     </table>
   </div>
 
@@ -50,44 +50,44 @@
     <h2>2 · Podio oficial (1º·2º·3º)</h2>
     <div class="answer">ANT · HAM · VER</div>
     <div class="sub">Secuencia exacta (EV-óptima)</div>
-    <div class="prob">0.4 % conjunta · 8.4 pts esperados</div>
+    <div class="prob">0.5 % conjunta · 8.9 pts esperados</div>
     <span class="pts">35 pts</span>
     <span class="method">Método: Plackett-Luce + optimización de EV</span>
     <table>
       <tr><th>Pos.</th><th>Piloto</th><th>Marginal</th></tr>
-      <tr><td>1º</td><td>ANT</td><td>15.7 %</td></tr>
-      <tr><td>2º</td><td>HAM</td><td>11.5 %</td></tr>
-      <tr><td>3º</td><td>VER</td><td>11.6 %</td></tr>
+      <tr><td>1º</td><td>ANT</td><td>16.6 %</td></tr>
+      <tr><td>2º</td><td>HAM</td><td>14.0 %</td></tr>
+      <tr><td>3º</td><td>VER</td><td>12.5 %</td></tr>
     </table>
   </div>
 
   <div class="card">
     <h2>3 · Vuelta rápida</h2>
-    <div class="answer">RUS</div>
-    <div class="sub">George Russell · Mercedes</div>
-    <div class="prob">14.9 %</div>
+    <div class="answer">HAM</div>
+    <div class="sub">Lewis Hamilton · Ferrari</div>
+    <div class="prob">15.4 %</div>
     <span class="pts">10 pts</span>
-    <span class="method">Método: pesos ritmo × historial</span>
+    <span class="method">Método: rating Bradley-Terry × historial</span>
     <table>
       <tr><th>Piloto</th><th>Prob.</th></tr>
-      <tr><td>RUS</td><td>14.9 %</td></tr>
-      <tr><td>ANT</td><td>13.4 %</td></tr>
-      <tr><td>LEC</td><td>13.4 %</td></tr>
+      <tr><td>HAM</td><td>15.4 %</td></tr>
+      <tr><td>ANT</td><td>14.0 %</td></tr>
+      <tr><td>LEC</td><td>13.8 %</td></tr>
     </table>
   </div>
 
   <div class="card">
     <h2>4 · Posición de Checo Pérez</h2>
-    <div class="answer">P20</div>
+    <div class="answer">DNF</div>
     <div class="sub">Sergio Pérez · Cadillac</div>
-    <div class="prob">15.9 % · DNF 15.5 %</div>
+    <div class="prob">15.9 % · P17-P21 si termina</div>
     <span class="pts">15 pts</span>
     <span class="method">Método: distribución empírica Monte Carlo</span>
     <table>
       <tr><th>Resultado</th><th>Prob.</th></tr>
-      <tr><td>P20</td><td>15.9 %</td></tr>
-      <tr><td>DNF</td><td>15.5 %</td></tr>
-      <tr><td>P19</td><td>15.4 %</td></tr>
+      <tr><td>DNF</td><td>15.9 %</td></tr>
+      <tr><td>P19</td><td>13.3 %</td></tr>
+      <tr><td>P20</td><td>12.3 %</td></tr>
     </table>
   </div>
 
@@ -109,9 +109,9 @@
 </div>
 
 <div class="note">
-  <span class="tag">Metodología:</span> ratings 2026 (35 % forma + 20 % victorias + 30 % equipo + 15 % afinidad México) → Plackett-Luce → Monte Carlo (20 000 iteraciones, semilla 42) → Poisson-Gamma Bayesiano (SC) → optimización de puntos esperados (EV). Sin valores a mano, sin regresión sintética, sin Random Forest sobre muestras diminutas.
+  <span class="tag">Metodología:</span> rating Bradley-Terry (18 rondas 2026, máxima verosimilitud) + equipo + momento (últimas 4 carreras) + afinidad México → Plackett-Luce → Monte Carlo (20 000 iteraciones, semilla 42) → Poisson-Gamma Bayesiano (SC) → optimización de puntos esperados (EV). Sin valores a mano, sin regresión sintética, sin Random Forest sobre muestras diminutas.
   <br><span class="tag">Regla clave:</span> si aciertas al piloto en el podio pero no su posición exacta, ganas 5 pts (premio parcial).
-  <br><span class="tag">Fuentes:</span> Jolpica/Ergast (standings R18 2026 + histórico México 2015–2025), Wikipedia (equipos 2026, trazable). Informe completo: <code>reports/informe_cientifico.md</code> · DTO: <code>reports/strategy_prediction_dto.json</code>.
+  <br><span class="tag">Fuentes:</span> Jolpica/Ergast (18 rondas 2026 + histórico México 2015–2025), Wikipedia (equipos 2026, trazable). Informe completo: <code>reports/informe_cientifico.md</code> · DTO: <code>reports/strategy_prediction_dto.json</code>.
 </div>
 </body>
 </html>
