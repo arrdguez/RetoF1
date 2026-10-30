@@ -62,7 +62,7 @@ def run_predictions(n_sim: int = 2500):
     # 5. Safety Cars
     sc = q["5_safety_cars_fisicos"]
     print(f"\n5️⃣  SAFETY CARS FÍSICOS (No VSC) -> {sc['challenge_points']} pts")
-    print(f"    ▶ Conteo Exacto Proyectado: {sc['predicted_count']} auto(s) (Probabilidad: {sc['probability_pct']}%)")
+    print(f"    ▶ Conteo Exacto Proyectado: {sc['predicted_count']} auto(s) (Probabilidad: {sc['mode_probability_pct']}%)")
     print("    ▶ Distribución esperada:")
     for k, v in sc['distribution'].items():
         print(f"        - {k}: {v}")

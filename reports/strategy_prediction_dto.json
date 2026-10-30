@@ -5,66 +5,83 @@
     "architectureStack": "ASO_APX_Compatible_DTO",
     "circuit": "Autodromo Hermanos Rodriguez",
     "elevationMeters": 2240,
-    "airDensityRatio": 0.743
+    "airDensityRatio": 0.7434,
+    "pipelineType": "Canonical_Monte_Carlo_And_Poisson_Unified"
   },
   "strategyPredictionDTO": {
     "point_1_polePosition": {
-      "predictedDriver": "NOR",
-      "confidencePct": 54.2,
-      "topContenders": [
-        "NOR",
-        "PIA",
-        "VER"
-      ],
-      "methodology": "Random Forest Regressor (Pace + Altitude SpeedST)",
+      "predictedDriver": "LEC",
+      "confidencePct": 61.04,
+      "topContenders": {
+        "LEC": 61.04,
+        "VER": 38.08,
+        "NOR": 0.88
+      },
+      "methodology": "Simulaci\u00f3n Monte Carlo calibrada con Pace de Q3 y Velocidad en Recta (2,240m)",
       "awardedPoints": 10
     },
     "point_2_officialPodium": {
-      "p1_winner": "NOR",
-      "p2_second": "SAI",
-      "p3_third": "PIA",
+      "p1_winner": "VER",
+      "p2_second": "LEC",
+      "p3_third": "NOR",
       "exactSequence": [
-        "NOR",
-        "SAI",
-        "PIA"
+        "VER",
+        "LEC",
+        "NOR"
       ],
-      "confidencePct": 42.8,
-      "methodology": "Ensemble Random Forest (Long Run Pace + Track Affinity)",
+      "jointProbabilityPct": 32.72,
+      "methodology": "Distribuci\u00f3n Conjunta Monte Carlo P(P1 \u2229 P2 \u2229 P3) en 2,500 iteraciones",
       "awardedPoints": 35
     },
     "point_3_fastestLap": {
       "predictedDriver": "NOR",
-      "beta1TyreDegradation": 0.0534,
-      "forecastedTrackTempC": 44.8,
-      "methodology": "Multiple Linear Regression (TyreAge, TrackTemp, FuelLoad)",
+      "confidencePct": 36.12,
+      "methodology": "Modelo T\u00e1ctico de Ventana de Pits (>24s) en vueltas 65-68 con neum\u00e1ticos Blandos",
       "awardedPoints": 10
     },
     "point_4_checoPerezPosition": {
-      "predictedPosition": "P5",
-      "alternativePosition": "P6",
-      "dnfProbabilityPct": 18.5,
-      "methodology": "Gradient Boosting Regressor (Traffic Penalty + Turn 1 Risk)",
+      "predictedPosition": "P7",
+      "probabilityPct": 30.56,
+      "alternatives": [
+        {
+          "position": "P7",
+          "probability_pct": 30.56
+        },
+        {
+          "position": "P6",
+          "probability_pct": 28.2
+        },
+        {
+          "position": "P8",
+          "probability_pct": 24.0
+        },
+        {
+          "position": "P5",
+          "probability_pct": 7.0
+        }
+      ],
+      "dnfRiskPct": 6.64,
+      "methodology": "Distribuci\u00f3n emp\u00edrica Monte Carlo con penalizaci\u00f3n por tr\u00e1fico y riesgo Curva 1",
       "awardedPoints": 15
     },
     "point_5_safetyCarsPhysical": {
-      "pureMathMode": 0,
-      "operationalPick": 1,
-      "modeProbabilityPct": 47.24,
-      "operationalProbabilityPct": 35.43,
-      "pAtLeastOneSCPct": 52.76,
+      "predictedCount": 1,
+      "modeProbabilityPct": 36.74,
+      "pAtLeastOnePct": 65.01,
       "distribution": {
-        "0": 47.24,
-        "1": 35.43,
-        "2": 13.29,
-        "3": 3.32
+        "0 Safety Cars": "34.99%",
+        "1 Safety Car": "36.74%",
+        "2 Safety Cars": "19.29%",
+        "3 Safety Cars": "6.75%"
       },
-      "lambdaHistorical": 0.75,
-      "methodology": "Poisson Stochastic Distribution (scipy.stats.poisson)",
+      "lambdaEffective": 1.05,
+      "lambdaBase": 0.75,
+      "methodology": "Distribuci\u00f3n Estoc\u00e1stica de Poisson (scipy.stats.poisson): P(X = k) = (1.05^k * e^(-1.05)) / k!",
       "awardedPoints": 10
     }
   },
   "summaryScore": {
     "maximumChallengePoints": 80,
-    "projectedAccuracyScore": "High (Analytical Cross-Validation)"
+    "projectedAccuracyScore": "High (Canonical Single Source of Truth)"
   }
 }

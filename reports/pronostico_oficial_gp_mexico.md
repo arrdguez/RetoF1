@@ -1,60 +1,57 @@
-# 🏁 Informe Ejecutivo de Predicción: Desafío Tech Estratega de F1
+# 🏁 Informe Ejecutivo de Predicción Canónica: Desafío Tech Estratega de F1
 **Gran Premio de México | Autódromo Hermanos Rodríguez (2,240 msnm)**  
-*Modelado Híbrido: Distribución de Poisson, Regresión Múltiple y Random Forest / Gradient Boosting*
+*Pipeline Canónico Unificado: Simulación Monte Carlo + Poisson Estocástico + Telemetría Real*
 
 ---
 
-## 🏎️ Resumen de la Quiniela Oficial (Tus 5 Respuestas)
+## 🏎️ Quiniela Oficial Unificada (Tus 5 Respuestas Definitivas)
 
-| # | Punto a Predecir | Pronóstico Oficial | Confianza / Modelo | Puntos en Juego |
-|---|------------------|:------------------:|:------------------:|:---------------:|
-| **1** | **Pole Position (Q3 Sábado)** | **Lando Norris (NOR)** *(Alt: VER / LEC)* | 54.2% (Random Forest) | **10 pts** |
-| **2** | **Podio Oficial (Top 3 Exacto)** | **1° NOR ➔ 2° SAI ➔ 3° PIA** | 42.8% (Ensemble RF) | **35 pts** |
-| **3** | **Vuelta Rápida en Carrera** | **Lando Norris (NOR)** | $\beta_1 = 0.0534$ s/vta (Reg. Múltiple) | **10 pts** |
-| **4** | **Posición de Checo Pérez** | **P5** *(Alternativa: P6)* | Riesgo DNF: 18.5% (Gradient Boosting) | **15 pts** |
-| **5** | **Safety Cars Físicos (No VSC)** | **0 o 1 Safety Car** | $P(X=0)=47.2\%$, $P(X=1)=35.4\%$ (Poisson) | **10 pts** |
+| # | Punto a Predecir | Pronóstico Oficial | Probabilidad / Modelo | Puntos en Juego |
+|---|------------------|:------------------:|:--------------------:|:---------------:|
+| **1** | **Pole Position (Q3 Sábado)** | **Charles Leclerc (LEC)** | **61.04%** (Monte Carlo Pace) | **10 pts** |
+| **2** | **Podio Oficial (Top 3 Exacto)** | **1° VER ➔ 2° LEC ➔ 3° NOR** | **32.72%** (P. Conjunta Monte Carlo) | **35 pts** |
+| **3** | **Vuelta Rápida en Carrera** | **Lando Norris (NOR)** | **36.12%** (Ventana Táctica de Pits) | **10 pts** |
+| **4** | **Posición de Checo Pérez** | **P7** *(Rango P6-P8)* | **30.56%** (Empírica MC; DNF: 6.6%) | **15 pts** |
+| **5** | **Safety Cars Físicos (No VSC)** | **1 Safety Car** | **36.74%** (Poisson $\lambda_{\text{eff}} = 1.05$) | **10 pts** |
 | **TOTAL** | **Puntaje Máximo en Juego** | | | **80 pts** |
 
 ---
 
-## 📐 Fundamentación Matemática & Modelos Implementados
+## 📐 Fundamentación Matemática & Modelos
 
 ### 1. Punto #5: Distribución Estocástica de Poisson (Safety Cars Físicos)
-En lugar de una heurística estática, se calculó la distribución discreta exacta de Poisson para eventos raros e independientes:
 $$P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}$$
-Con una tasa histórica calibrada para el GP de México de $\lambda = 0.75$ (3 autos de seguridad físicos en las 4 ediciones recientes 2021-2024):
-- **$P(X = 0)$:** $\frac{0.75^0 e^{-0.75}}{0!} = e^{-0.75} \approx \mathbf{47.24\%}$
-- **$P(X = 1)$:** $\frac{0.75^1 e^{-0.75}}{1!} = 0.75 \times 0.4724 \approx \mathbf{35.43\%}$
-- **$P(X = 2)$:** $\frac{0.75^2 e^{-0.75}}{2!} = \frac{0.5625 \times 0.4724}{2} \approx \mathbf{13.29\%}$
-- **$P(X = 3)$:** $\approx \mathbf{3.32\%}$
-- **$P(X \ge 1)$ (Probabilidad acumulada de ver al menos un SC físico):** $1 - P(X=0) = \mathbf{52.76\%}$.
-
-> **Decisión de Quiniela:** Si tu quiniela pide un valor entero exacto, **0 SC** es la moda individual con 47.2%, pero **1 SC** (35.4%) está fuertemente respaldado por el embudo de 890m hacia la Curva 1.
-
----
-
-### 2. Punto #3: Regresión Lineal Múltiple de Degradación Térmica (Vuelta Rápida)
-Se modeló el tiempo por vuelta en función de la vida del neumático, temperatura y carga de combustible:
-$$\text{LapTime} = \beta_0 + \beta_1(\text{TyreAge}) + \beta_2(\text{TrackTemp}) - \beta_3(\text{FuelLoad})$$
-- Con el pronóstico en tiempo real para CDMX que anticipa temperaturas de pista de **44.8°C** en el asfalto:
-  - **Lando Norris (NOR):** Obtuvo la menor pendiente de degradación térmica con $\mathbf{\beta_1 = 0.0534\text{ s/vuelta}}$.
-  - **Charles Leclerc (LEC):** $\beta_1 = 0.0542\text{ s/vuelta}$.
-  - **Max Verstappen (VER):** $\beta_1 = 0.0561\text{ s/vuelta}$.
-- **Conclusión:** El piloto con menor desgaste relativo en tandas largas genera el colchón necesario (>24 seg) para entrar a boxes entre las **vueltas 65 y 68**, colocar compuesto Blando nuevo en aire limpio y arrebatar la Vuelta Rápida.
+- **Tasa Histórica Base en CDMX ($\lambda_{\text{base}} = 0.75$):** 3 autos de seguridad físicos en las 4 carreras recientes (2021, 2023, 2024). Con esta tasa base, la moda discreta pura es $k=0$ (47.24%) y $k=1$ (35.43%).
+- **Tasa Operativa Ajustada ($\lambda_{\text{eff}} = 1.05$):** Incorporando la frenada de 355 km/h a 90 km/h en la Curva 1 (la recta de salida más larga de la F1 con 890m) y las fallas de refrigeración de frenos por baja densidad del aire (2,240m):
+  - **$P(X = 0)$:** **34.99%**
+  - **$P(X = 1)$:** **36.74% (Moda Estadística)**
+  - **$P(X = 2)$:** **19.29%**
+  - **$P(X = 3)$:** **6.75%**
+  - **$P(X \ge 1)$ (Probabilidad acumulada de al menos un SC físico):** **65.01%**.
 
 ---
 
-### 3. Puntos #1, #2 y #4: Random Forest & Gradient Boosting (Pole, Podio y Checo Pérez)
-El ensamble fue entrenado cruzando:
-- *Features:* Velocidad punta en trampa de velocidad (`SpeedST` a 2,240m), ritmo en últimas 3 carreras (Austin, Singapur, Baku), historial en Hermanos Rodríguez e índice de fiabilidad térmica de la unidad de potencia en aire fino (~74.3% densidad).
-- **Pole Position:** Lando Norris registra la mejor relación entre velocidad en recta (352 km/h) y aceleración lateral en las Eses.
-- **Podio Oficial:** Norris (1°), Sainz (2°) y Piastri (3°).
-- **Checo Pérez:** Penalizado en clasificación por tráfico habitual en Q3 (salida esperada P7-P9). Su ritmo de carrera proyecta una remontada hasta **P5**, con un riesgo de abandono (DNF) del **18.5%** concentrado en el embudo de la primera curva.
+### 2. Punto #3: Modelo Táctico de Vuelta Rápida y Ventana de Pits
+En la F1 moderna, la Vuelta Rápida la logra el piloto del Top 4 que disponga de una **brecha libre superior a 24 segundos** sobre su perseguidor entre las **vueltas 65 y 68** para realizar una parada en boxes sin perder su lugar en el podio.
+- **Lando Norris (NOR)** y **Max Verstappen (VER)** son los candidatos principales con gaps suficientes en tandas largas para montar neumáticos Blandos nuevos.
+- Con **36.12% de probabilidad táctica**, Norris encabeza la proyección de vuelta rápida.
 
 ---
 
-## 🛠️ Entregables y Artefactos Disponibles
+### 3. Puntos #1, #2 y #4: Simulación Monte Carlo (2,500 Carreras)
+- **Pole Position (Q3):** Charles Leclerc (LEC, 61.0%) supera a Verstappen (38.1%) en simulación de clasificación a una vuelta debido a la tracción de Ferrari en las curvas lentas del Sector 3 (Foro Sol).
+- **Podio Oficial (Carrera 71 Vueltas):** Max Verstappen (VER, 50.1%) capitaliza la velocidad punta de Red Bull en recta y su historial dominante en México (5 victorias) para llevarse el triunfo, escoltado por Leclerc (2°) y Norris (3°).
+- **Checo Pérez:** La simulación Monte Carlo completa arroja una distribución realista:
+  - **P7:** **30.56%**
+  - **P6:** **28.20%**
+  - **P8:** **24.00%**
+  - **P5:** **7.00%**
+  - **DNF:** **6.64%** (riesgo de contacto en Curva 1 o sobrecalentamiento).
 
-1. **Dashboard Visual Interactivo:** Abre [`dashboard/index.html`](file:///home/rfeynman/Dropbox/src/RetoF1/dashboard/index.html) en tu navegador para ver la interfaz estilo Pit-Wall.
-2. **DTO Corporativo ASO/APX:** [`reports/strategy_prediction_dto.json`](file:///home/rfeynman/Dropbox/src/RetoF1/reports/strategy_prediction_dto.json).
-3. **Script Ejecutable:** `python f1_hybrid_predictor.py` o `python main.py --all`.
+---
+
+## 🛠️ Archivos Actualizados
+- **CLI Principal:** `./venv/bin/python3 main.py --predict`
+- **Predictor Híbrido:** `./venv/bin/python3 f1_hybrid_predictor.py`
+- **Dashboard Web:** [`dashboard/index.html`](file:///home/rfeynman/Dropbox/src/RetoF1/dashboard/index.html)
+- **JSON DTO ASO/APX:** [`reports/strategy_prediction_dto.json`](file:///home/rfeynman/Dropbox/src/RetoF1/reports/strategy_prediction_dto.json)
