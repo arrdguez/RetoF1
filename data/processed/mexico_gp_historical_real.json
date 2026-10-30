@@ -1,0 +1,53 @@
+{
+  "circuit": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+  "editions": [
+    {
+      "year": 2021,
+      "round": 18,
+      "pole": "BOT",
+      "winner": "VER",
+      "podium": [
+        "VER",
+        "HAM",
+        "PER"
+      ],
+      "checo_finish": 3
+    },
+    {
+      "year": 2022,
+      "round": 20,
+      "pole": "VER",
+      "winner": "VER",
+      "podium": [
+        "VER",
+        "HAM",
+        "PER"
+      ],
+      "checo_finish": 3
+    },
+    {
+      "year": 2023,
+      "round": 19,
+      "pole": "LEC",
+      "winner": "VER",
+      "podium": [
+        "VER",
+        "HAM",
+        "LEC"
+      ],
+      "checo_finish": 20
+    },
+    {
+      "year": 2024,
+      "round": 20,
+      "pole": "SAI",
+      "winner": "SAI",
+      "podium": [
+        "SAI",
+        "NOR",
+        "LEC"
+      ],
+      "checo_finish": 17
+    }
+  ]
+}

@@ -1,58 +1,74 @@
 import logging
 import json
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
+import pandas as pd
 from config.settings import CACHE_DIR, SAMPLES_DATA_DIR
 
 logger = logging.getLogger(__name__)
 
 class FastF1Client:
     """
-    Client for extracting official F1 timing and telemetry data using FastF1.
-    Provides graceful fallback to sample/offline data if offline or library missing.
+    Client for extracting official F1 timing, results, and telemetry using FastF1 and Ergast.
+    Does not require account credentials for race results, qualifying, or standings.
     """
 
     def __init__(self, cache_dir: Optional[Path] = None):
         self.cache_dir = cache_dir or CACHE_DIR
-        self._fastf1_available = False
         self._init_fastf1()
 
     def _init_fastf1(self):
         try:
             import fastf1
+            from fastf1.ergast import Ergast
             fastf1.Cache.enable_cache(str(self.cache_dir))
-            self._fastf1 = fastf1
-            self._fastf1_available = True
+            self.fastf1 = fastf1
+            self.ergast = Ergast()
+            self.is_available = True
             logger.info("FastF1 initialized with cache at %s", self.cache_dir)
-        except ImportError:
-            logger.warning("FastF1 library not installed. Using local sample fallback.")
-            self._fastf1_available = False
-
-    def load_session(self, year: int, race_round_or_name: Any, session_type: str = "Q"):
-        """
-        Loads a session (e.g. 'FP1', 'FP2', 'FP3', 'Q', 'R').
-        """
-        if not self._fastf1_available:
-            return self._get_fallback_session(year, race_round_or_name, session_type)
-
-        try:
-            session = self._fastf1.get_session(year, race_round_or_name, session_type)
-            session.load()
-            return session
         except Exception as e:
-            logger.warning("Failed to load FastF1 session: %s. Falling back to local data.", e)
-            return self._get_fallback_session(year, race_round_or_name, session_type)
+            logger.warning("FastF1 initialization notice: %s", e)
+            self.is_available = False
+            self.ergast = None
 
-    def _get_fallback_session(self, year: int, race: Any, session_type: str) -> Dict[str, Any]:
-        sample_path = SAMPLES_DATA_DIR / "mexico_gp_history.json"
-        if sample_path.exists():
-            with open(sample_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        return {"status": "mock", "year": year, "race": str(race), "session": session_type}
+    def get_race_results(self, season: int, round_num: int) -> Optional[pd.DataFrame]:
+        """
+        Retrieves full official race classification for a given season and round.
+        """
+        if not self.is_available or not self.ergast:
+            return None
+        try:
+            res = self.ergast.get_race_results(season=season, round=round_num)
+            if res and res.content:
+                return res.content[0]
+        except Exception as e:
+            logger.error("Error fetching race results for %s R%s: %s", season, round_num, e)
+        return None
 
-    def get_drivers_info(self) -> list:
-        sample_path = SAMPLES_DATA_DIR / "drivers_teams.json"
-        if sample_path.exists():
-            with open(sample_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        return []
+    def get_qualifying_results(self, season: int, round_num: int) -> Optional[pd.DataFrame]:
+        """
+        Retrieves official qualifying results with Q1, Q2, Q3 times.
+        """
+        if not self.is_available or not self.ergast:
+            return None
+        try:
+            res = self.ergast.get_qualifying_results(season=season, round=round_num)
+            if res and res.content:
+                return res.content[0]
+        except Exception as e:
+            logger.error("Error fetching qualifying results for %s R%s: %s", season, round_num, e)
+        return None
+
+    def get_driver_standings(self, season: int) -> Optional[pd.DataFrame]:
+        """
+        Retrieves current championship standings.
+        """
+        if not self.is_available or not self.ergast:
+            return None
+        try:
+            res = self.ergast.get_driver_standings(season=season)
+            if res and res.content:
+                return res.content[0]
+        except Exception as e:
+            logger.error("Error fetching driver standings for %s: %s", season, e)
+        return None

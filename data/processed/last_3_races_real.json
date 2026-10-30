@@ -1,0 +1,44 @@
+{
+  "season": 2024,
+  "races": [
+    {
+      "round": 17,
+      "name": "Azerbaijan Grand Prix (Baku)",
+      "pole": "LEC",
+      "winner": "PIA",
+      "podium": [
+        "PIA",
+        "LEC",
+        "RUS"
+      ],
+      "checo_finish": 17,
+      "checo_status": "Retired"
+    },
+    {
+      "round": 18,
+      "name": "Singapore Grand Prix (Marina Bay)",
+      "pole": "NOR",
+      "winner": "NOR",
+      "podium": [
+        "NOR",
+        "VER",
+        "PIA"
+      ],
+      "checo_finish": 10,
+      "checo_status": "Lapped"
+    },
+    {
+      "round": 19,
+      "name": "United States Grand Prix (COTA)",
+      "pole": "NOR",
+      "winner": "LEC",
+      "podium": [
+        "LEC",
+        "SAI",
+        "VER"
+      ],
+      "checo_finish": 7,
+      "checo_status": "Finished"
+    }
+  ]
+}

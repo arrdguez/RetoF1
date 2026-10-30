@@ -1,0 +1,42 @@
+{
+  "circuit": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+  "coordinates": {
+    "lat": 19.4042,
+    "lon": -99.0907,
+    "elevation_m": 2240
+  },
+  "days": [
+    {
+      "date": "2026-10-30",
+      "max_temp_c": 26.8,
+      "min_temp_c": 14.6,
+      "rain_prob_pct": 16,
+      "wind_max_kmh": 12.8,
+      "condition": "Seco / Caluroso"
+    },
+    {
+      "date": "2026-10-31",
+      "max_temp_c": 27.8,
+      "min_temp_c": 12.3,
+      "rain_prob_pct": 0,
+      "wind_max_kmh": 15.0,
+      "condition": "Seco / Caluroso"
+    },
+    {
+      "date": "2026-11-01",
+      "max_temp_c": 27.0,
+      "min_temp_c": 12.5,
+      "rain_prob_pct": 0,
+      "wind_max_kmh": 16.0,
+      "condition": "Seco / Caluroso"
+    },
+    {
+      "date": "2026-11-02",
+      "max_temp_c": 26.8,
+      "min_temp_c": 12.1,
+      "rain_prob_pct": 0,
+      "wind_max_kmh": 11.0,
+      "condition": "Seco / Caluroso"
+    }
+  ]
+}

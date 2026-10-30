@@ -113,10 +113,36 @@ def show_copilot_prompt():
     print(CopilotPromptGenerator.get_official_flyer_prompt())
     print("="*70)
 
+def run_weather():
+    from config.settings import PROCESSED_DATA_DIR
+    from src.features.telemetry_analysis import TelemetryAnalyzer
+    weather_file = PROCESSED_DATA_DIR / "weather_cdmx_weekend.json"
+    if not weather_file.exists():
+        from fetch_real_data import fetch_cdmx_weather
+        fetch_cdmx_weather()
+
+    with open(weather_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    print("\n" + "="*70)
+    print("🌤️ PRONÓSTICO METEOROLÓGICO REAL EN VIVO (CDMX - HERMANOS RODRÍGUEZ)")
+    print("="*70)
+    for d in data.get("days", []):
+        impact = TelemetryAnalyzer.get_weather_degradation_impact(d["max_temp_c"], d["rain_prob_pct"])
+        print(f"\n📅 Fecha: {d['date']}")
+        print(f"   ▶ Temperatura Aire: {d['max_temp_c']}°C (Mín: {d['min_temp_c']}°C)")
+        print(f"   ▶ Temperatura Estimada Asfalto: {impact['estimated_track_temp_c']}°C")
+        print(f"   ▶ Probabilidad Lluvia: {d['rain_prob_pct']}% ({d['condition']})")
+        print(f"   ▶ Viento Máximo: {d['wind_max_kmh']} km/h")
+        print(f"   ▶ Estrategia Neumáticos: {impact['recommended_strategy']}")
+        print(f"   ▶ Ventana Vuelta Rápida: {impact['fastest_lap_window']}")
+
 def main():
     parser = argparse.ArgumentParser(description="Reto F1 - Estratega F1 con GitHub Stack")
     parser.add_argument("--predict", action="store_true", help="Ejecutar simulación y mostrar los 5 pronósticos")
     parser.add_argument("--physics", action="store_true", help="Mostrar análisis de física y degradación por altitud")
+    parser.add_argument("--weather", action="store_true", help="Mostrar pronóstico del tiempo real en CDMX")
+    parser.add_argument("--fetch-real", action="store_true", help="Descargar datos reales en vivo de APIs")
     parser.add_argument("--prompt", action="store_true", help="Mostrar el prompt para GitHub Copilot")
     parser.add_argument("--test-score", action="store_true", help="Demostración de cálculo de puntaje")
     parser.add_argument("--sims", type=int, default=2500, help="Número de iteraciones de Monte Carlo")
@@ -126,9 +152,17 @@ def main():
 
     print_banner()
 
+    if args.fetch_real:
+        import fetch_real_data
+        fetch_real_data.main()
+        return
+
     # Default to --predict if no flags provided
-    if not any([args.predict, args.physics, args.prompt, args.test_score, args.all]):
+    if not any([args.predict, args.physics, args.weather, args.prompt, args.test_score, args.all]):
         args.predict = True
+
+    if args.weather or args.all:
+        run_weather()
 
     if args.physics or args.all:
         run_physics()
