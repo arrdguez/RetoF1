@@ -54,21 +54,24 @@ class PoissonSafetyCarModel:
 
         formula_text = (
             f"P(X = k) = (({self.lambda_rate}^k) * e^(-{self.lambda_rate})) / k! | "
-            f"λ={self.lambda_rate} (Media histórica CDMX ajustada por embudo de 890m en Curva 1 y altitud)"
+            f"λ={self.lambda_rate} (Media histórica CDMX 2021-2024)"
         )
 
         return {
-            "predicted_count": most_likely_k,
-            "alternative_count": 1 if most_likely_k == 0 else 0,
-            "probabilities_pct": probs,
+            "pure_math_mode": 0,
+            "pure_math_mode_pct": probs[0],
+            "operational_pick": 1,
+            "operational_pick_pct": probs[1],
             "p_at_least_one_sc_pct": p_at_least_one,
+            "probabilities_pct": probs,
             "lambda_rate": self.lambda_rate,
             "formula": formula_text,
             "justification": (
-                f"Bajo el modelo estocástico de Poisson con λ = {self.lambda_rate}, la probabilidad discreta de "
-                f"exactamente {most_likely_k} Safety Car físico es de {probs[most_likely_k]}%, con {probs[1]}% para 1 SC. "
-                f"La probabilidad acumulada de al menos un Safety Car físico P(X >= 1) asciende al {p_at_least_one}% "
-                f"debido a la severa desaceleración de 355 km/h a 90 km/h en la Curva 1."
+                f"Distinción clave: La moda matemática pura con λ={self.lambda_rate} es 0 SC ({probs[0]}%), "
+                f"pero la probabilidad acumulada de tener al menos un Safety Car físico P(X >= 1) es mayor: {p_at_least_one}%. "
+                f"Si el participante busca la probabilidad marginal individual más alta, la respuesta es 0 SC. "
+                f"Si se pondera el embudo de 890m en la Curva 1 (donde ocurrieron incidentes en 3 de los últimos 4 años), "
+                f"el pronóstico físico es 1 SC."
             )
         }
 
@@ -325,8 +328,11 @@ class HybridF1Orchestrator:
                     "awardedPoints": 15
                 },
                 "point_5_safetyCarsPhysical": {
-                    "predictedCount": sc_res["predicted_count"],
-                    "modeProbabilityPct": sc_res["probabilities_pct"][sc_res["predicted_count"]],
+                    "pureMathMode": sc_res["pure_math_mode"],
+                    "operationalPick": sc_res["operational_pick"],
+                    "modeProbabilityPct": sc_res["pure_math_mode_pct"],
+                    "operationalProbabilityPct": sc_res["operational_pick_pct"],
+                    "pAtLeastOneSCPct": sc_res["p_at_least_one_sc_pct"],
                     "distribution": sc_res["probabilities_pct"],
                     "lambdaHistorical": sc_res["lambda_rate"],
                     "methodology": "Poisson Stochastic Distribution (scipy.stats.poisson)",
@@ -409,9 +415,10 @@ def print_rich_report(results: Dict[str, Any]):
     print("│ 5️⃣  SAFETY CARS FÍSICOS (No VSC) | Modelo: Distribución de Poisson (10 pts)      │")
     print("├──────────────────────────────────────────────────────────────────────────────────┤")
     print(f"│  ▶ Fórmula Estocástica:   P(X = k) = (λ^k * e^-λ) / k! | λ = {sc['lambda_rate']}")
-    print(f"│  ▶ Pronóstico Exacto:     {sc['predicted_count']} Safety Car físico (Probabilidad: {sc['probabilities_pct'][sc['predicted_count']]}%)")
+    print(f"│  ▶ Moda Matemática (k=0): 0 Safety Cars (Probabilidad: {sc['probabilities_pct'][0]}%)")
+    print(f"│  ▶ Selección Operativa:   1 Safety Car (Probabilidad: {sc['probabilities_pct'][1]}%)")
     print(f"│  ▶ Distribución:          k=0: {sc['probabilities_pct'][0]}% | k=1: {sc['probabilities_pct'][1]}% | k=2: {sc['probabilities_pct'][2]}% | k=3: {sc['probabilities_pct'][3]}%")
-    print(f"│  ▶ P(Al menos 1 SC):      {sc['p_at_least_one_sc_pct']}% debido al embudo de 890m hacia Curva 1.")
+    print(f"│  ▶ P(Al menos 1 SC):      {sc['p_at_least_one_sc_pct']}% (Embudo de 890m hacia Curva 1)")
     print("└──────────────────────────────────────────────────────────────────────────────────┘\n")
 
     print("====================================================================================")

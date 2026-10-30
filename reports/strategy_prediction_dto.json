@@ -47,8 +47,11 @@
       "awardedPoints": 15
     },
     "point_5_safetyCarsPhysical": {
-      "predictedCount": 0,
+      "pureMathMode": 0,
+      "operationalPick": 1,
       "modeProbabilityPct": 47.24,
+      "operationalProbabilityPct": 35.43,
+      "pAtLeastOneSCPct": 52.76,
       "distribution": {
         "0": 47.24,
         "1": 35.43,

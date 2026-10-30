@@ -91,9 +91,22 @@ class MonteCarloRaceSimulator:
         race_scores.sort(key=lambda x: x[1], reverse=True)
         classified_drivers = [driver for driver, _ in race_scores]
 
-        # Determine fastest lap: high probability for front runners who pit for softs
-        fastest_lap_candidates = classified_drivers[:5] if len(classified_drivers) >= 5 else classified_drivers
-        fastest_lap = random.choice(fastest_lap_candidates) if fastest_lap_candidates else "VER"
+        # Determine fastest lap tactically:
+        # Front runner (P1-P4) with pit window gap (>24s) and low tyre degradation
+        fastest_lap = "VER"
+        if len(classified_drivers) >= 2:
+            # P2, P3 or P4 often pit if gap to car behind is secure
+            fl_weights = []
+            candidates = classified_drivers[:4]
+            # Weights favoring drivers with superior late-race tire management (NOR, LEC, VER)
+            deg_weights = {"NOR": 0.35, "VER": 0.28, "LEC": 0.25, "SAI": 0.08, "PIA": 0.04}
+            for c in candidates:
+                fl_weights.append(deg_weights.get(c, 0.05))
+            sum_w = sum(fl_weights)
+            norm_w = [w / sum_w for w in fl_weights]
+            fastest_lap = random.choices(candidates, weights=norm_w, k=1)[0]
+        elif classified_drivers:
+            fastest_lap = classified_drivers[0]
 
         # Determine Checo's exact finish
         if "PER" in dnf_drivers:
