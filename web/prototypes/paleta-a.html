@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototipo A · Estratega F1</title>
+  <style>
+    :root{--paper:#f7f6f2;--ink:#24343a;--petrol:#17666b;--muted:#516167;--line:#cbd2ce;--soft:#ecf0ea}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 'Segoe UI',Tahoma,sans-serif}
+    main{max-width:980px;margin:auto;padding:clamp(28px,6vw,80px) 24px 56px}
+    header{border-bottom:1px solid var(--ink);padding-bottom:30px}h1{font-size:clamp(2rem,4.5vw,3.8rem);line-height:1.07;letter-spacing:-.03em;font-weight:600;max-width:620px;margin:0 0 20px}
+    .sub{color:var(--muted);max-width:680px;margin:0}
+    .intro{margin:35px 0 12px;color:var(--muted);font-size:.91rem}
+    .result{display:grid;grid-template-columns:32px minmax(160px,1fr) minmax(190px,1.25fr) auto;align-items:baseline;gap:12px 24px;border-top:1px solid var(--line);padding:21px 0}
+    .result:last-child{border-bottom:1px solid var(--line)}.n{color:var(--petrol);font-size:.85rem;font-variant-numeric:tabular-nums}.label{font-weight:550}
+    .answer{font-size:clamp(1.25rem,2.4vw,1.75rem);letter-spacing:-.025em;font-weight:650;line-height:1.2}.prob{color:var(--petrol);font-size:.9rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+    aside{background:var(--soft);padding:16px 20px;margin-top:30px;font-size:.88rem;color:var(--muted)}
+    footer{display:flex;flex-wrap:wrap;gap:12px 48px;padding-top:46px;color:var(--muted);font-size:.9rem}footer strong{display:block;color:var(--ink);font-weight:600}a{color:var(--petrol);text-decoration-thickness:1px;text-underline-offset:3px}a:focus-visible{outline:2px solid var(--petrol);outline-offset:3px}
+    ::selection{background:var(--petrol);color:#fff}
+    @media(max-width:680px){.result{grid-template-columns:26px 1fr auto;gap:4px 12px}.label{grid-column:2/-1}.answer{grid-column:2}.prob{grid-column:3;text-align:right}footer{gap:20px}}
+  </style>
+</head>
+<body><main>
+  <header><h1>Cinco pronósticos.<br>Una quiniela clara.</h1><p class="sub">GP de México 2026 · Autódromo Hermanos Rodríguez · Predicción anterior a la clasificación · Probabilidades estimadas mediante simulación.</p></header>
+  <p class="intro">Respuestas para la quiniela</p>
+  <section aria-label="Pronósticos">
+    <div class="result"><span class="n">01</span><span class="label">Pole position</span><strong class="answer">Antonelli · ANT</strong><span class="prob">16,35 %</span></div>
+    <div class="result"><span class="n">02</span><span class="label">Podio oficial · 1.º, 2.º, 3.º</span><strong class="answer">ANT · HAM · VER</strong><span class="prob">0,5 % conjunta</span></div>
+    <div class="result"><span class="n">03</span><span class="label">Vuelta rápida</span><strong class="answer">Hamilton · HAM</strong><span class="prob">15,42 %</span></div>
+    <div class="result"><span class="n">04</span><span class="label">Checo Pérez · posición final</span><strong class="answer">DNF · Abandono</strong><span class="prob">15,89 %</span></div>
+    <div class="result"><span class="n">05</span><span class="label">Safety Cars físicos · sin VSC</span><strong class="answer">0</strong><span class="prob">48,23 %</span></div>
+  </section>
+  <aside>Las probabilidades indican incertidumbre del modelo, no garantías. El podio está ordenado; para Checo, «DNF» significa abandono.</aside>
+  <footer><div><strong>Alejandro Rodriguez Rodriguez</strong><a href="mailto:alejandro.rodriguez8@bbva.com">alejandro.rodriguez8@bbva.com</a></div><div><strong>Camilo Serrano Fuentes</strong><a href="mailto:camilo.serrano.fuentes@bbva.com">camilo.serrano.fuentes@bbva.com</a></div></footer>
+</main></body>
+</html>
