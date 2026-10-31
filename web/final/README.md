@@ -1,4 +1,4 @@
-# APEX Intelligence · Google Apps Script
+# Pitwall · Google Apps Script
 
 Web app de lectura basada en la paleta D. Portada: bases del concurso y las cinco respuestas. Pestañas adicionales: análisis y cómo se obtuvo. Sin paquetes npm, autenticación propia ni APIs en tiempo real. La portada incluye una fotografía alojada en Wikimedia Commons.
 
@@ -15,7 +15,7 @@ No se requiere `.clasp.json`: ese archivo contiene el identificador de un proyec
 ## Fotografía
 
 - No hace falta subir `web/images/`: la portada carga una versión optimizada de la vista aérea directamente desde Wikimedia Commons. Si la red de BBVA bloquea Wikimedia, la foto no aparecerá, pero el pronóstico seguirá legible.
-- Autor: [ProtoplasmaKid](https://commons.wikimedia.org/wiki/File:Vista_a%C3%A9rea_del_Aut%C3%B3dromo_Hermanos_Rodr%C3%ADguez_01.jpg); licencia [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). La atribución y el aviso del encuadre adaptado aparecen bajo la imagen.
+- Autor: [ProtoplasmaKid](https://commons.wikimedia.org/wiki/File:Vista_a%C3%A9rea_del_Aut%C3%B3dromo_Hermanos_Rodr%C3%ADguez_01.jpg); licencia [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). La atribución aparece bajo la imagen, que se muestra sin recortar.
 - Las fotografías de Checo en `web/images/` no se publican: comprobar sus permisos de uso antes de incorporarlas.
 
 ## Datos y actualización

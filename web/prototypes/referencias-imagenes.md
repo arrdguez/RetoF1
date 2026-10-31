@@ -1,4 +1,4 @@
-git # Referencias visuales para APEX Intelligence · Paleta D
+# Referencias visuales para Pitwall · Paleta D
 
 Enlaces aportados para evaluar recursos editoriales del prototipo. **Son referencias, no recursos autorizados para publicar.** No se han descargado ni verificado las licencias o la vigencia de los enlaces.
 

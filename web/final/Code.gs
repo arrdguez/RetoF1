@@ -7,7 +7,7 @@ function doGet() {
   const page = HtmlService.createTemplateFromFile('Index');
   page.payload = JSON.stringify(getPredictionData_()).split(String.fromCharCode(60)).join('\\u003c');
   return page.evaluate()
-    .setTitle('APEX Intelligence · GP de México 2026')
+    .setTitle('Pitwall · GP de México 2026')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
